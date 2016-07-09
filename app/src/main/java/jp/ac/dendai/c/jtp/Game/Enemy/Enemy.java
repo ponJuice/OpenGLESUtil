@@ -5,6 +5,7 @@ import jp.ac.dendai.c.jtp.Game.Bullet.Bullet;
 import jp.ac.dendai.c.jtp.Game.Bullet.BulletList;
 import jp.ac.dendai.c.jtp.Physics.Collider.CircleCollider;
 import jp.ac.dendai.c.jtp.Physics.Collider.ICollider;
+import jp.ac.dendai.c.jtp.UIs.Screen.GameScreen;
 import jp.ac.dendai.c.jtp.openglesutil.R;
 import jp.ac.dendai.c.jtp.openglesutil.Util.FpsController;
 import jp.ac.dendai.c.jtp.openglesutil.core.GLES20Util;
@@ -33,8 +34,8 @@ public class Enemy {
     }
 
     public void proc(){
-        if(counter > 60 ){
-            BulletList.addBullet(new Bullet(new CircleCollider(0.1f),BitmapList.setBitmap(R.drawable.bomd2),0,0,0.05f,0.05f,0.1f,0.1f));
+        if(counter > 10 ){
+            GameScreen.bulletList.add(new Bullet(new CircleCollider(0.1f),BitmapList.setBitmap(R.drawable.bomd2),0.05f,0.05f,0.01f,0.01f,0.1f,0.1f));
             counter = 0;
         }
         counter++;

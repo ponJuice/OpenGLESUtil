@@ -126,10 +126,14 @@ public abstract class abstractGLES20Util {
 	 * 正方形の頂点座標
 	 */
 	private static final float[] boxVertex= {		//正方形頂点座標
-		0.0f,0.0f,
-		1.0f,0.0f,
-		0.0f,1.0f,
-		1.0f,1.0f
+		//0.0f,0.0f,
+		//1.0f,0.0f,
+		//0.0f,1.0f,
+		//1.0f,1.0f
+			-0.5f,-0.5f,
+			0.5f,-0.5f,
+			-0.5f,0.5f,
+			0.5f,0.5f
 	};
 	/**
 	 * テクスチャ座標
@@ -139,6 +143,7 @@ public abstract class abstractGLES20Util {
 		1.0f,1.0f,
 		0.0f,0.0f,
 		1.0f,0.0f
+
 	};
 
 	public static float getWidth(){
@@ -494,8 +499,10 @@ public abstract class abstractGLES20Util {
 
 		aspect = (float)width/(float)height;
 
-		height_gl = 1.0f;
-		width_gl = aspect;
+		height_gl = 2.0f;
+		width_gl = aspect*2.0f;
+
+		Log.d("initDrawErea","Device Size:("+width+" , "+ height+") GL Size:("+height_gl+" , "+width_gl+")");
 
 		GLES20.glViewport(0,0,width,height);
 		if(Perspective){

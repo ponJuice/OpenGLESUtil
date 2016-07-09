@@ -15,4 +15,5 @@ public interface ICollider {
     public float getBoundaryCircle();
     public void debugOutlineDraw(Canvas canvas,Paint paint);
     public void setPhysicsObject(IPhysics2D obj);
+    public float getRadius();
 }

@@ -23,7 +23,7 @@ import jp.ac.dendai.c.jtp.openglesutil.graphic.blending_mode.GLES20COMPOSITIONMO
 
 public class MainActivity extends Activity implements GLSurfaceView.Renderer{
     private FpsController fpsController = new FpsController((short)60);
-    private Bitmap[] fpsImage = new Bitmap[10];
+    public static Bitmap[] fpsImage = new Bitmap[10];
 
     @Override
     public boolean onTouchEvent(MotionEvent event)

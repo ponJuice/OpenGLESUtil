@@ -8,15 +8,18 @@ public class UIAlign {
 		TOP,
 		BOTTOM
 	}
+
+
+
 	public static float convertAlign(float length,Align align){
 		if(align == Align.LEFT || align == Align.BOTTOM){
-			return 0;
+			return -length/2f;
 		}
 		else if(align == Align.RIGHT || align == Align.TOP){
-			return length;
+			return length/2f;
 		}
 		else{
-			return Math.abs(length/2f);
+			return 0;
 		}
 	}
 }

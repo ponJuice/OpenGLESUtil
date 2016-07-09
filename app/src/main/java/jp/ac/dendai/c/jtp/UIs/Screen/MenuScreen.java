@@ -4,12 +4,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import jp.ac.dendai.c.jtp.Game.GameManager;
-import jp.ac.dendai.c.jtp.Game.Player;
 import jp.ac.dendai.c.jtp.UIs.Transition.ScrollTransition;
 import jp.ac.dendai.c.jtp.UIs.UI.Button;
 import jp.ac.dendai.c.jtp.UIs.UI.Listener.ButtonListener;
-import jp.ac.dendai.c.jtp.UIs.UI.Text;
-import jp.ac.dendai.c.jtp.openglesutil.R;
+import jp.ac.dendai.c.jtp.UIs.UI.Text.Text;
 import jp.ac.dendai.c.jtp.openglesutil.core.GLES20Util;
 import jp.ac.dendai.c.jtp.openglesutil.graphic.blending_mode.GLES20COMPOSITIONMODE;
 
@@ -23,12 +21,12 @@ public class MenuScreen implements Screenable {
 	private MenuScreen(){
 		b_content = new Text[content.length];
 		for(int n=0;n<content.length;n++){
-			b_content[n] = new Text(content[n],255,255,255);
+			b_content[n] = new Text(content[n]);
 			b_content[n].setHorizontalTextAlign(Text.TextAlign.CENTOR);
 			b_content[n].setVerticalTextAlign(Text.TextAlign.CENTOR);
 		}
 		Log.d("MenuScreen",String.valueOf(GLES20Util.getAspect()));
-		button = new Button(GLES20Util.getAspect(), 0.5f, 0.7f, 0.2f, 1f, R.drawable.plane , "Start", 255, 255, 255);
+		button = new Button(GLES20Util.getAspect(), 0.5f, 0.7f, 0.2f, 1f, "Start",255,255,0,0);
 		button.setListener(new StartButtonListener());
 	}
 

@@ -8,6 +8,7 @@ import jp.ac.dendai.c.jtp.Physics.Collider.ICollider;
 import jp.ac.dendai.c.jtp.Physics.Physics.IPhysics2D;
 import jp.ac.dendai.c.jtp.Physics.Physics.Physics2D;
 import jp.ac.dendai.c.jtp.UIs.Math.Vector2;
+import jp.ac.dendai.c.jtp.openglesutil.R;
 import jp.ac.dendai.c.jtp.openglesutil.core.GLES20Util;
 import jp.ac.dendai.c.jtp.openglesutil.graphic.blending_mode.GLES20COMPOSITIONMODE;
 
@@ -34,6 +35,8 @@ public class Bullet extends Physics2D {
 
     public void draw(float offsetX,float offsetY){
         GLES20Util.DrawGraph(offsetX+position.getX(),offsetY+position.getY(),sizeX,sizeY, BitmapList.getBitmap(imageId),1f, GLES20COMPOSITIONMODE.ADD);
+        GLES20Util.DrawGraph(offsetX+position.getX(),offsetY+position.getY(),collider.getRadius()*2.0f,collider.getRadius()*2.0f, BitmapList.getBitmap(R.drawable.bomd2),1f, GLES20COMPOSITIONMODE.ADD);
+
     }
 
     public boolean isAllive(){
@@ -55,8 +58,10 @@ public class Bullet extends Physics2D {
         return collider.isCollision(obj.getCollider());
     }
 
-    @Override
-    public void debugDrawColliderOutline(Canvas canvas, Paint paint) {
-
+    public float getSizeX(){
+        return sizeX;
+    }
+    public float getSizeY(){
+        return  sizeY;
     }
 }

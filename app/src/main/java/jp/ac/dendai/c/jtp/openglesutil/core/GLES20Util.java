@@ -30,10 +30,10 @@ public class GLES20Util extends abstractGLES20Util {
 		if(value == 0)
 			return 0;
 		if(mode == GLES20UTIL_MODE.POSX){
-			return (GLES20Util.getAspect()*2f)/(GLES20Util.getWidth())*value;
+			return  GLES20Util.getWidth_gl()/GLES20Util.getWidth()*value;
 		}
 		else if(mode == GLES20UTIL_MODE.POSY){
-			return (2f)/(GLES20Util.getHight())*(GLES20Util.getHight()-value);
+			return GLES20Util.getHeight_gl()/GLES20Util.getHight()*(GLES20Util.getHight()-value);
 		}
 		return 0;
 	}

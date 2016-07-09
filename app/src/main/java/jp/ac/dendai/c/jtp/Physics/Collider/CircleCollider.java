@@ -55,4 +55,9 @@ public class CircleCollider extends Collider{
     public void setPhysicsObject(IPhysics2D obj) {
         object = obj;
     }
+
+    @Override
+    public float getRadius() {
+        return radius;
+    }
 }

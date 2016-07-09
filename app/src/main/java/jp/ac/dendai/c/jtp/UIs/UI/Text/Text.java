@@ -1,4 +1,4 @@
-package jp.ac.dendai.c.jtp.UIs.UI;
+package jp.ac.dendai.c.jtp.UIs.UI.Text;
 
 import android.graphics.Bitmap;
 
@@ -13,6 +13,12 @@ public class Text {
 		TOP,
 		BOTTOM
 	}
+
+	public  enum WrittingAlign{
+		VERTICCAL,
+		HOLIZONTAL
+	}
+
 	private String text;
 	private Bitmap bitmap;
 	private TextAlign horizontalTextAlign = TextAlign.LEFT;
@@ -21,11 +27,10 @@ public class Text {
 	private float scaleY = 1f;
 	private float x = 0,y = 0;
 
-	public Text(String text,int r,int g,int b){
+	public Text(String text){
 		this.text = text;
-		bitmap = GLES20Util.stringToBitmap(text, 1, r, g, b);
+		bitmap = GLES20Util.stringToBitmap(text, 1, 255, 255, 255);
 	}
-
 	public float getScaleX() {
 		return scaleX;
 	}
@@ -44,22 +49,24 @@ public class Text {
 
 	public void draw(float x,float y,float alpha,GLES20COMPOSITIONMODE mode){
 		if(horizontalTextAlign == TextAlign.CENTOR){
-			this.x = bitmap.getWidth()/(scaleX*2000f);
+			//this.x = bitmap.getWidth()/(scaleX*2000f);
+			this.x = 0;
 		}
 		else if(horizontalTextAlign == TextAlign.RIGHT){
 			this.x = bitmap.getWidth()/(scaleX*1000f);
 		}
 		else{
-			this.x = 0;
+			this.x = bitmap.getWidth()/(scaleX*1000f);
 		}
 		if(verticalTextAlign == TextAlign.CENTOR){
-			this.y = bitmap.getHeight()/(scaleY*2000f);
+			//this.y = bitmap.getHeight()/(scaleY*2000f);
+			this.y = 0;
 		}
 		else if(verticalTextAlign == TextAlign.TOP){
 			this.y = bitmap.getHeight()/(scaleY*1000f);
 		}
 		else{
-			this.y = 0;
+			this.y = bitmap.getHeight()/(scaleY*1000f);
 		}
 		GLES20Util.DrawGraph(x-this.x, y-this.y, bitmap.getWidth()/(scaleX*1000f), bitmap.getHeight()/(scaleY*1000f), bitmap,1f,mode);
 	}

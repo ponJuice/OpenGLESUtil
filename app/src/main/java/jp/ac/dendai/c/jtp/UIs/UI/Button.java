@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import jp.ac.dendai.c.jtp.UIs.UI.Listener.ButtonListener;
+import jp.ac.dendai.c.jtp.UIs.UI.Text.Text;
 import jp.ac.dendai.c.jtp.openglesutil.core.GLES20Util;
 import jp.ac.dendai.c.jtp.openglesutil.graphic.blending_mode.GLES20COMPOSITIONMODE;
 
@@ -52,19 +53,30 @@ public class Button {
 	private float x,y,lengthX,lengthY;
 	private float alpha;
 	private Bitmap image;
+	private int backgroundId;
 	private Text text;
 	private UIAlign.Align xAlign;
 	private UIAlign.Align yAlign;
 	private ButtonListener listener;
 
-	public Button(float x,float y,float lengthX,float lengthY,float alpha,int imageId,String text,int r,int g,int b){
+	public Button(float x,float y,float lengthX,float lengthY,float alpha,int background,String text){
+		this.text = new Text(text);
+		backgroundId = background;
+		init(x,y,lengthX,lengthY,alpha);
+	}
+
+	public Button(float x,float y,float lengthX,float lengthY,float alpha,String text,int a,int r,int g,int b){
+		this.text = new Text(text);
+		image = GLES20Util.createBitmap(r, g, b,a);
+		init(x,y,lengthX,lengthY,alpha);
+	}
+
+	private void init(float x,float y,float lengthX,float lengthY,float alpha){
 		this.x = x;
 		this.y = y;
 		this.lengthX = lengthX;
 		this.lengthY = lengthY;
 		this.alpha = alpha;
-		image = GLES20Util.createBitmap(255, 0, 0, 255);
-		this.text = new Text(text,r,g,b);
 		this.text.setHorizontalTextAlign(Text.TextAlign.CENTOR);
 		this.text.setVerticalTextAlign(Text.TextAlign.CENTOR);
 		xAlign = UIAlign.Align.CENTOR;
@@ -75,15 +87,17 @@ public class Button {
 		listener = l;
 	}
 
+	public boolean contains(float _x,float _y){
+		return _x >= (x - lengthX/2f) && _x <= (x + lengthX/2f) &&
+				_y >= (y - lengthY/2f) && _y <= (y + lengthY/2f);
+	}
+
 	private float xbuffer;
 	private float ybuffer;
 	public void touch(MotionEvent event){
 		xbuffer = GLES20Util.screenToInnerPosition(event.getX(0), GLES20Util.GLES20UTIL_MODE.POSX);
 		ybuffer = GLES20Util.screenToInnerPosition(event.getY(0), GLES20Util.GLES20UTIL_MODE.POSY);
-		if(x-UIAlign.convertAlign(lengthX, xAlign) <= xbuffer &&
-			xbuffer <= x+UIAlign.convertAlign(lengthX, xAlign) &&
-			y-UIAlign.convertAlign(lengthY, yAlign) <= ybuffer &&
-			ybuffer <= y+UIAlign.convertAlign(lengthY,yAlign))
+		if(contains(xbuffer,ybuffer))
 		{
 			switch(event.getAction()){
 			case MotionEvent.ACTION_DOWN:
@@ -116,7 +130,7 @@ public class Button {
 				image,
 				alpha,
 				GLES20COMPOSITIONMODE.ALPHA);
-		text.draw(x, y, alpha, GLES20COMPOSITIONMODE.ALPHA);
+		text.draw(UIAlign.convertAlign(lengthX,xAlign), UIAlign.convertAlign(lengthY,yAlign), alpha, GLES20COMPOSITIONMODE.ALPHA);
 	}
 	public void draw(float offsetX,float offsetY){
 		GLES20Util.DrawGraph(x-UIAlign.convertAlign(lengthX, xAlign)+offsetX,
