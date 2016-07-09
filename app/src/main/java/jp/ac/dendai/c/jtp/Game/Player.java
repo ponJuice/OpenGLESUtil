@@ -89,7 +89,7 @@ public class Player extends Bullet implements TouchListener{
 	public void Draw(float offsetX,float offsetY){//true 点有
 		synchronized (lock) {
 			if(damage){
-				if(damageCounter % 30 == 0){
+				if(damageCounter % 5 == 0){
 					if(flag) {
 						alpha = 0.5f;
 						flag = !flag;

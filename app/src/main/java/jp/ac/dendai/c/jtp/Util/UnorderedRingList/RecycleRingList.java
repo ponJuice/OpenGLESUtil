@@ -161,7 +161,11 @@ public class RecycleRingList<T>{
 
         @Override
         public String toString() {
-            return object.toString();
+            if(object == null)
+                return "_";
+            else
+                return "+";
+            //return object.toString();
         }
     }
 

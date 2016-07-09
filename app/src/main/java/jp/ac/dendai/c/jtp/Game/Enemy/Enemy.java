@@ -35,7 +35,7 @@ public class Enemy {
 
     public void proc(){
         if(counter > 10 ){
-            GameScreen.bulletList.add(new Bullet(new CircleCollider(0.1f),BitmapList.setBitmap(R.drawable.bomd2),0.05f,0.05f,0.01f,0.01f,0.1f,0.1f));
+            GameScreen.bulletList.add(new Bullet(new CircleCollider(0.05f),BitmapList.setBitmap(R.drawable.bomd2),0.05f,0.05f,0.01f,0.01f,0.1f,0.1f));
             counter = 0;
         }
         counter++;

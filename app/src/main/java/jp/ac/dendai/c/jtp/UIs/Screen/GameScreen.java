@@ -35,7 +35,7 @@ public class GameScreen implements Screenable {
     public GameScreen(){
         isFreeze = false;
         bulletList = new BulletList(128);
-        this.player = new Player(new CircleCollider(0.05f),BitmapList.setBitmap(R.drawable.plane),0,0.5f,0.2f,0.2f);
+        this.player = new Player(new CircleCollider(0.03f),BitmapList.setBitmap(R.drawable.plane),0,0.5f,0.2f,0.2f);
         this.enemy = new Enemy(BitmapList.setBitmap(R.drawable.plane),0.5f,1f,0.2f,0.2f);
         Input.getTouchArray()[0].addTouchListener(this.player);
         nt = new NumberText();
@@ -78,6 +78,8 @@ public class GameScreen implements Screenable {
         player.Draw(offsetX, offsetY);
         bulletList.drawAll(offsetX,offsetY);
         nt.draw(player.getLife()-1,1,offsetX+0.5f,offsetY+0.5f,1f,1f, GLES20COMPOSITIONMODE.ALPHA);
+
+        //Log.d("bulletList : ",bulletList.toString());
     }
 
     @Override
