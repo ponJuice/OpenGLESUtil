@@ -1,4 +1,4 @@
-package jp.ac.dendai.c.jtp.Game;
+package jp.ac.dendai.c.jtp.Game.Graphics;
 
 import android.graphics.Bitmap;
 
@@ -16,12 +16,12 @@ public class BitmapList {
 	/**
 	 * 無かったと起用
 	 */
-	private static Bitmap noImage;
+	private static BitmapContainer noImage;
 	/**
 	 *
 	 * ビットマップ配列
 	 */
-	private static HashMap<Integer,Bitmap> bitmap = new HashMap<>();
+	private static HashMap<Integer,BitmapContainer> bitmap = new HashMap<>();
 
 	/**
 	 * 現在登録されている量を返します
@@ -37,11 +37,12 @@ public class BitmapList {
 	 */
 	public static Bitmap getBitmap(int id){
 		if(bitmap.containsKey(id)){
-			return bitmap.get(id);
+			return bitmap.get(id).get();
 		}
-		if(noImage == null)
-			noImage = GLES20Util.loadBitmap(R.drawable.noimage);
-		return noImage;
+		if(noImage == null) {
+			noImage = new BitmapContainer(GLES20Util.loadBitmap(R.drawable.noimage));
+		}
+		return noImage.get();
 	}
 	/**
 	 * ビットマップを登録します
@@ -50,7 +51,7 @@ public class BitmapList {
 	 */
 	public static int setBitmap(int id){
 		if(!bitmap.containsKey(id)){
-			bitmap.put(id,GLES20Util.loadBitmap(id));
+			bitmap.put(id,new BitmapContainer(GLES20Util.loadBitmap(id)));
 			return id;
 		}
 		else{
@@ -67,6 +68,23 @@ public class BitmapList {
 			bitmap.remove(id);
 		}
 		return 0;
+	}
+
+	public static BitmapContainer getAnimationBitmap(int id){
+		if(!bitmap.containsKey(id)){
+			if(noImage == null) {
+				noImage = new BitmapContainer(GLES20Util.loadBitmap(R.drawable.noimage));
+			}
+			return noImage;
+		}
+		return bitmap.get(id);
+	}
+
+	public static int setAnimationBitmap(BitmapContainer c,int id){
+		if(!bitmap.containsKey(id)){
+			bitmap.put(id,c);
+		}
+		return id;
 	}
 
 	public static void clear(){

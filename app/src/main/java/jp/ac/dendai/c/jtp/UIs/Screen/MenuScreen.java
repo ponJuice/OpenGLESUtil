@@ -3,6 +3,9 @@ package jp.ac.dendai.c.jtp.UIs.Screen;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import java.util.NavigableMap;
+import java.util.Objects;
+
 import jp.ac.dendai.c.jtp.Game.GameManager;
 import jp.ac.dendai.c.jtp.UIs.Transition.ScrollTransition;
 import jp.ac.dendai.c.jtp.UIs.UI.Button;
@@ -12,6 +15,12 @@ import jp.ac.dendai.c.jtp.openglesutil.core.GLES20Util;
 import jp.ac.dendai.c.jtp.openglesutil.graphic.blending_mode.GLES20COMPOSITIONMODE;
 
 public class MenuScreen implements Screenable {
+	public enum TOSCREEN{
+		NON,
+		GAMESCREEN
+	}
+	private TOSCREEN nextScreen = TOSCREEN.NON;
+	private Object lock;
 	private static MenuScreen instance;
 	private final static String[] content = {"START","OPTION","CREDIT"};
 	private static Text[] b_content;
@@ -28,6 +37,7 @@ public class MenuScreen implements Screenable {
 		Log.d("MenuScreen",String.valueOf(GLES20Util.getAspect()));
 		button = new Button(GLES20Util.getAspect(), 0.5f, 0.7f, 0.2f, 1f, "Start",255,255,0,0);
 		button.setListener(new StartButtonListener());
+		lock = new Object();
 	}
 
 	public static MenuScreen getInstance(){
@@ -38,7 +48,8 @@ public class MenuScreen implements Screenable {
 
 	@Override
 	public void Proc() {
-
+		if(nextScreen == TOSCREEN.GAMESCREEN)
+			toGameScreen();
 	}
 
 	@Override
@@ -69,15 +80,22 @@ public class MenuScreen implements Screenable {
 
 	}
 
+	private void toGameScreen(){
+		GameManager.isTransition = true;
+		ScrollTransition.getInstance().setScrollTime(10);
+		ScrollTransition.getInstance().setDirect(GLES20Util.getAspect() * 2f, 0);
+		//GameManager.nextScreen = new StageSelectScreen();
+		GameManager.nextScreen = new GameScreen();
+		GameManager.transition = ScrollTransition.getInstance();
+		nextScreen = TOSCREEN.NON;
+	}
+
 	public class StartButtonListener implements ButtonListener {
 		@Override
 		public void execute(Button button) {
-			GameManager.isTransition = true;
-			ScrollTransition.getInstance().setScrollTime(10);
-			ScrollTransition.getInstance().setDirect(GLES20Util.getAspect()*2f, 0);
-			//GameManager.nextScreen = new StageSelectScreen();
-			GameManager.nextScreen = new GameScreen();
-			GameManager.transition = ScrollTransition.getInstance();
+			synchronized (lock) {
+				nextScreen = TOSCREEN.GAMESCREEN;
+			}
 		}
 
 	}

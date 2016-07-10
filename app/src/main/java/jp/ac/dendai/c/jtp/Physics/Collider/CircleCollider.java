@@ -60,4 +60,9 @@ public class CircleCollider extends Collider{
     public float getRadius() {
         return radius;
     }
+
+    @Override
+    public void setRadius(float radius) {
+        this.radius = radius;
+    }
 }

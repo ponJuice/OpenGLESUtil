@@ -463,6 +463,7 @@ public abstract class abstractGLES20Util {
 	   */
 	  //画像ファイルの読み込み　切り抜き
 	  public static Bitmap loadBitmap(int startX,int startY,int endX,int endY,int id){
+		  Log.d("loadBitmap cutRect","start:("+startX+","+startY+") end:("+endX+","+endY+") id:"+id);
 		  //画像ファイルを切り抜いて読み込む
 		  //targetActivity.get
 		  BitmapRegionDecoder regionDecoder;
@@ -471,7 +472,8 @@ public abstract class abstractGLES20Util {
 		try{
 		  regionDecoder = BitmapRegionDecoder.newInstance(is, false);
 		  Rect rect = new Rect(startX,startY,endX,endY);	//切り抜く領域（矩形クラス）の用意
-		  return regionDecoder.decodeRegion(rect,null).copy(Bitmap.Config.ARGB_8888,true);	//RegionDecoderで読み込んだbitmapはイミュターブル（不変）なのでもコピーメソッドを使いコピーしてミュータブル（変更可）にする
+			Bitmap b = regionDecoder.decodeRegion(rect,null);
+		  return b.copy(Bitmap.Config.ARGB_8888,true);	//RegionDecoderで読み込んだbitmapはイミュターブル（不変）なのでもコピーメソッドを使いコピーしてミュータブル（変更可）にする
 	  	} catch (IOException e) {
 		    e.printStackTrace();
 		}

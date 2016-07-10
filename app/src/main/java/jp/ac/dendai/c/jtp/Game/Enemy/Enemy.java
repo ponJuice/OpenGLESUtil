@@ -1,13 +1,9 @@
 package jp.ac.dendai.c.jtp.Game.Enemy;
 
-import jp.ac.dendai.c.jtp.Game.BitmapList;
-import jp.ac.dendai.c.jtp.Game.Bullet.Bullet;
-import jp.ac.dendai.c.jtp.Game.Bullet.BulletList;
-import jp.ac.dendai.c.jtp.Physics.Collider.CircleCollider;
-import jp.ac.dendai.c.jtp.Physics.Collider.ICollider;
+import jp.ac.dendai.c.jtp.Game.Graphics.BitmapList;
+import jp.ac.dendai.c.jtp.Game.Bullet.BulletTemplate;
 import jp.ac.dendai.c.jtp.UIs.Screen.GameScreen;
 import jp.ac.dendai.c.jtp.openglesutil.R;
-import jp.ac.dendai.c.jtp.openglesutil.Util.FpsController;
 import jp.ac.dendai.c.jtp.openglesutil.core.GLES20Util;
 import jp.ac.dendai.c.jtp.openglesutil.graphic.blending_mode.GLES20COMPOSITIONMODE;
 
@@ -20,6 +16,7 @@ public class Enemy {
     protected float sizeX,sizeY;
     protected float HP;
     protected int counter;    //でバグ
+    protected BulletTemplate bt;
 
     public Enemy(int imageId,float x,float y,float sizeX,float sizeY){
         this.x = x;
@@ -27,6 +24,16 @@ public class Enemy {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.imageId = imageId;
+
+        bt = new BulletTemplate();
+        bt.radius = 0.05f;
+        bt.x = 0.05f;
+        bt.y = 0.05f;
+        bt.ux = 0.01f;
+        bt.uy = 0.01f;
+        bt.sizeX = 0.1f;
+        bt.sizeY = 0.1f;
+        bt.imageId = BitmapList.setBitmap(R.drawable.bomd2);
     }
 
     public void draw(float offsetX,float offsetY){
@@ -35,7 +42,7 @@ public class Enemy {
 
     public void proc(){
         if(counter > 10 ){
-            GameScreen.bulletList.add(new Bullet(new CircleCollider(0.05f),BitmapList.setBitmap(R.drawable.bomd2),0.05f,0.05f,0.01f,0.01f,0.1f,0.1f));
+            GameScreen.bulletList.add(bt);
             counter = 0;
         }
         counter++;

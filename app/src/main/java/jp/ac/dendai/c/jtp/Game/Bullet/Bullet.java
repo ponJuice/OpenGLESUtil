@@ -1,13 +1,10 @@
 package jp.ac.dendai.c.jtp.Game.Bullet;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-
-import jp.ac.dendai.c.jtp.Game.BitmapList;
+import jp.ac.dendai.c.jtp.Game.Graphics.BitmapList;
+import jp.ac.dendai.c.jtp.Physics.Collider.CircleCollider;
 import jp.ac.dendai.c.jtp.Physics.Collider.ICollider;
 import jp.ac.dendai.c.jtp.Physics.Physics.IPhysics2D;
 import jp.ac.dendai.c.jtp.Physics.Physics.Physics2D;
-import jp.ac.dendai.c.jtp.UIs.Math.Vector2;
 import jp.ac.dendai.c.jtp.openglesutil.R;
 import jp.ac.dendai.c.jtp.openglesutil.core.GLES20Util;
 import jp.ac.dendai.c.jtp.openglesutil.graphic.blending_mode.GLES20COMPOSITIONMODE;
@@ -19,6 +16,7 @@ public class Bullet extends Physics2D {
     protected boolean allive;
     protected int imageId;
     protected float sizeX,sizeY;
+    protected float degree = 0;
     public Bullet(ICollider c,int imageId,float x,float y,float ux,float uy,float sizeX,float sizeY){
         super();
         this.imageId = imageId;
@@ -31,6 +29,24 @@ public class Bullet extends Physics2D {
         allive = true;
         collider = c;
         collider.setPhysicsObject(this);
+    }
+
+    public Bullet(BulletTemplate bt){
+        super();
+        collider = new CircleCollider(bt.radius);
+        collider.setPhysicsObject(this);
+        setPropaty(bt);
+    }
+
+    public void setPropaty(BulletTemplate bt){
+        imageId = bt.imageId;
+        sizeX = bt.sizeX;
+        sizeY = bt.sizeY;
+        velocity.setX(bt.ux);
+        velocity.setY(bt.uy);
+        position.setX(bt.x);
+        position.setY(bt.y);
+        allive = true;
     }
 
     public void draw(float offsetX,float offsetY){

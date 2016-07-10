@@ -63,7 +63,7 @@ public class GLES20Util extends abstractGLES20Util {
 	public static void DrawString(String string,int size,int r,int g,int b,float alpha,float x,float y,GLES20COMPOSITIONMODE mode){
 		Bitmap bitmap = stringToBitmap(string,size,r,g,b);
 		//Log.d("DrawString",String.valueOf(bitmap.getWidth()));
-		DrawGraph(x,y,bitmap.getWidth()/1000f,bitmap.getHeight()/1000f,bitmap,alpha,mode);
+		DrawGraph(x, y, bitmap.getWidth() / 1000f, bitmap.getHeight() / 1000f, bitmap, alpha, mode);
 	}
 
 	/**
@@ -79,6 +79,23 @@ public class GLES20Util extends abstractGLES20Util {
 		Matrix.setIdentityM(modelMatrix, 0);
 		Matrix.translateM(modelMatrix,0,startX-aspect,startY-1.0f,0.0f);
 		Matrix.scaleM(modelMatrix,0,scaleX,scaleY,1.0f);
+		setShaderModelMatrix(modelMatrix);
+
+		setOnTexture(image,alpha);
+
+		mode.setBlendMode();
+		GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);	//描画
+	}
+
+	public static void DrawGraph(float startX,float startY,float lengthX,float lengthY,float degree,Bitmap image,float alpha,GLES20COMPOSITIONMODE mode){
+		float scaleX = lengthX;
+		float scaleY = lengthY;
+
+		float[] modelMatrix = new float[16];
+		Matrix.setIdentityM(modelMatrix, 0);
+		Matrix.translateM(modelMatrix, 0, startX - aspect, startY - 1.0f, 0.0f);
+		Matrix.scaleM(modelMatrix, 0, scaleX, scaleY, 1.0f);
+		Matrix.rotateM(modelMatrix, 0, degree, 0, 0, 1);
 		setShaderModelMatrix(modelMatrix);
 
 		setOnTexture(image,alpha);

@@ -8,14 +8,14 @@ import jp.ac.dendai.c.jtp.Game.Bullet.Bullet;
  * Created by テツヤ on 2016/07/08.
  */
 public class RecycleRingList<T>{
-    private RecycleRingListIterator<T> ite;
-    private int max;
-    private int size;
-    private RecycleRingListContainer<T>[] data;
-    private int[] info;
-    private int info_add;
-    private int info_remove;
-    private RecycleRingListContainer<T> first,end;
+    protected RecycleRingListIterator<T> ite;
+    protected int max;
+    protected int size;
+    protected RecycleRingListContainer<T>[] data;
+    protected int[] info;
+    protected int info_add;
+    protected int info_remove;
+    protected RecycleRingListContainer<T> first,end;
     public RecycleRingList(int maxData){
         max = maxData;
         data = new RecycleRingListContainer[max];
@@ -25,13 +25,13 @@ public class RecycleRingList<T>{
         }
     }
 
-    private void nextInfo_add(){
+    protected void nextInfo_add(){
         info_add++;
         if(info_add >= data.length)
             info_add = 0;
     }
 
-    private void nextInfo_remove(){
+    protected void nextInfo_remove(){
         info_remove++;
         if(info_remove >= data.length)
             info_remove = 0;
@@ -39,6 +39,17 @@ public class RecycleRingList<T>{
 
     public T next(){
         return first.object;
+    }
+
+    protected  void setNext(RecycleRingListContainer<T> target,RecycleRingListContainer<T> next){
+        target.next = next;
+    }
+    protected  void setPrev(RecycleRingListContainer<T> target,RecycleRingListContainer<T> prev){
+        target.prev = prev;
+    }
+
+    protected  void setContinerIndex(int index,RecycleRingListContainer<T> r){
+        r.recycleRingList_index = index;
     }
 
     public RecycleRingListContainer<T> add(T obj){
@@ -152,6 +163,8 @@ public class RecycleRingList<T>{
             return recycleRingList_index;
         }
         public void recycleRingList_Remove(){
+            if(recycleRingList_index == -1)
+                return;
             remove(this);
             recycleRingList_index = -1;
         }

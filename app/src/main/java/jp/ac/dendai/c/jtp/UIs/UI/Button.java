@@ -50,6 +50,16 @@ public class Button {
 		this.alpha = alpha;
 	}
 
+	public  void setEnable(boolean e){
+		enable = e;
+	}
+
+	public  boolean getEnable(){
+		return enable;
+	}
+
+	private static Bitmap mask;
+	private boolean enable = true;
 	private float x,y,lengthX,lengthY;
 	private float alpha;
 	private Bitmap image;
@@ -81,6 +91,9 @@ public class Button {
 		this.text.setVerticalTextAlign(Text.TextAlign.CENTOR);
 		xAlign = UIAlign.Align.CENTOR;
 		yAlign = UIAlign.Align.CENTOR;
+
+		if(mask == null)
+			mask = GLES20Util.createBitmap(169,169,169,255);
 	}
 
 	public void setListener(ButtonListener l){
@@ -95,6 +108,8 @@ public class Button {
 	private float xbuffer;
 	private float ybuffer;
 	public void touch(MotionEvent event){
+		if(!enable)
+			return;
 		xbuffer = GLES20Util.screenToInnerPosition(event.getX(0), GLES20Util.GLES20UTIL_MODE.POSX);
 		ybuffer = GLES20Util.screenToInnerPosition(event.getY(0), GLES20Util.GLES20UTIL_MODE.POSY);
 		if(contains(xbuffer,ybuffer))
@@ -123,6 +138,15 @@ public class Button {
 	}
 
 	public void draw(){
+		if(!enable) {
+			GLES20Util.DrawGraph(x - UIAlign.convertAlign(lengthX, xAlign),
+					y - UIAlign.convertAlign(lengthY, yAlign),
+					lengthX,
+					lengthY,
+					mask,
+					alpha,
+					GLES20COMPOSITIONMODE.SUB);
+		}
 		GLES20Util.DrawGraph(x-UIAlign.convertAlign(lengthX, xAlign),
 				y-UIAlign.convertAlign(lengthY, yAlign),
 				lengthX,

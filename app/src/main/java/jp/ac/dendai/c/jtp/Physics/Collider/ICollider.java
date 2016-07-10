@@ -16,4 +16,5 @@ public interface ICollider {
     public void debugOutlineDraw(Canvas canvas,Paint paint);
     public void setPhysicsObject(IPhysics2D obj);
     public float getRadius();
+    public void setRadius(float radius);
 }

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import jp.ac.dendai.c.jtp.Game.GameManager;
+import jp.ac.dendai.c.jtp.Game.Graphics.BitmapContainer;
 import jp.ac.dendai.c.jtp.TouchUtil.Input;
 import jp.ac.dendai.c.jtp.TouchUtil.Touch;
 import jp.ac.dendai.c.jtp.UIs.Screen.MenuScreen;
@@ -103,12 +104,12 @@ public class MainActivity extends Activity implements GLSurfaceView.Renderer{
 
     @Override
     public void onSurfaceChanged(GL10 arg0, int width, int height) {
-        Log.d("MainActivity","onSurfaceChanged");
+        Log.d("MainActivity", "onSurfaceChanged");
         // 表示領域を設定する
-        GLES20Util.initDrawErea(width, height,false);
+        GLES20Util.initDrawErea(width, height, false);
         //テクスチャの再読み込み
         GLES20Util.initTextures();
-        GLES20Util.initFpsBitmap(fpsImage,true, R.drawable.degital2);
+        GLES20Util.initFpsBitmap(fpsImage, true, R.drawable.degital2);;
         Log.d("onSurfaceCreated","initShader");
     }
 

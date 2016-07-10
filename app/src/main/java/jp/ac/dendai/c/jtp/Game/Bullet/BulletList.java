@@ -12,12 +12,12 @@ import jp.ac.dendai.c.jtp.openglesutil.core.GLES20Util;
  * Created by Goto on 2016/07/08.
  */
 public class BulletList{
-    private RecycleRingList<Bullet> rrl;
+    private BulletRecycleRingList rrl;
     public BulletList(int maxData) {
-        rrl = new RecycleRingList<Bullet>(maxData);
+        rrl = new BulletRecycleRingList(maxData);
     }
-    public void add(Bullet b){
-        rrl.add(b);
+    public void add(BulletTemplate bt){
+        rrl.add(bt);
     }
     public void remove(RecycleRingList<Bullet>.RecycleRingListContainer<Bullet> r){
         rrl.remove(r);
@@ -40,6 +40,8 @@ public class BulletList{
         while(ite.hasNext()){
             RecycleRingList<Bullet>.RecycleRingListContainer<Bullet> temp = ite.next();
             temp.getObject().updatePosition(1);
+
+            //画面外にでたら非活性化
             if(temp.getObject().getPosition().getX() < -temp.getObject().getSizeX()/2.0f || temp.getObject().getPosition().getX() > GLES20Util.getWidth_gl()+temp.getObject().getSizeX()/2.0f
                     || temp.getObject().getPosition().getY() < temp.getObject().getSizeY()/2.0f || temp.getObject().getPosition().getY() > GLES20Util.getHeight_gl()+temp.getObject().getSizeY()/2.0){
                 temp.recycleRingList_Remove();
