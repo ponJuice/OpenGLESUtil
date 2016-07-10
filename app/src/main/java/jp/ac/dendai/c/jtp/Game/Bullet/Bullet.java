@@ -1,6 +1,7 @@
 package jp.ac.dendai.c.jtp.Game.Bullet;
 
 import jp.ac.dendai.c.jtp.Game.Graphics.BitmapList;
+import jp.ac.dendai.c.jtp.Game.Player;
 import jp.ac.dendai.c.jtp.Physics.Collider.CircleCollider;
 import jp.ac.dendai.c.jtp.Physics.Collider.ICollider;
 import jp.ac.dendai.c.jtp.Physics.Physics.IPhysics2D;
@@ -17,7 +18,7 @@ public class Bullet extends Physics2D {
     protected int imageId;
     protected float sizeX,sizeY;
     protected float degree = 0;
-    public Bullet(ICollider c,int imageId,float x,float y,float ux,float uy,float sizeX,float sizeY){
+    public Bullet(ICollider c,int imageId,float x,float y,float ux,float uy,float sizeX,float sizeY,int mask,int tag){
         super();
         this.imageId = imageId;
         this.sizeX = sizeX;
@@ -29,6 +30,8 @@ public class Bullet extends Physics2D {
         allive = true;
         collider = c;
         collider.setPhysicsObject(this);
+        collider.setMask(mask);
+        collider.setTag(tag);
     }
 
     public Bullet(BulletTemplate bt){
@@ -46,11 +49,19 @@ public class Bullet extends Physics2D {
         velocity.setY(bt.uy);
         position.setX(bt.x);
         position.setY(bt.y);
+        collider.setRadius(bt.radius);
+        collider.setMask(bt.mask);
+        collider.setTag(bt.tag);
+
         allive = true;
     }
 
+    public void collisionPlayerProc(Player player){
+        player.collisionBulletProc();
+    }
+
     public void draw(float offsetX,float offsetY){
-        GLES20Util.DrawGraph(offsetX+position.getX(),offsetY+position.getY(),sizeX,sizeY, BitmapList.getBitmap(imageId),1f, GLES20COMPOSITIONMODE.ADD);
+        //GLES20Util.DrawGraph(offsetX+position.getX(),offsetY+position.getY(),sizeX,sizeY, BitmapList.getBitmap(imageId),1f, GLES20COMPOSITIONMODE.ADD);
         GLES20Util.DrawGraph(offsetX+position.getX(),offsetY+position.getY(),collider.getRadius()*2.0f,collider.getRadius()*2.0f, BitmapList.getBitmap(R.drawable.bomd2),1f, GLES20COMPOSITIONMODE.ADD);
 
     }

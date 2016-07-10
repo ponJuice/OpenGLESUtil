@@ -75,6 +75,11 @@ public class BitmapList {
 			if(noImage == null) {
 				noImage = new BitmapContainer(GLES20Util.loadBitmap(R.drawable.noimage));
 			}
+			try {
+				throw new Exception();
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 			return noImage;
 		}
 		return bitmap.get(id);

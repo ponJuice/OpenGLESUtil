@@ -52,8 +52,8 @@ public class BulletList{
         RecycleRingList<Bullet>.RecycleRingListIterator<Bullet> ite = rrl.getIterator();
         while(ite.hasNext()){
             Bullet b = ite.next().getObject();
-            if(!obj.isDamage() && b.isCollision(obj)){
-                obj.collisionBulletProc();
+            if(!obj.isDamage() && b.isCollision(obj) && b.getCollider().mask(obj.getCollider())){
+                b.collisionPlayerProc(obj);
                 return true;
             }
         }

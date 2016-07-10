@@ -1,6 +1,8 @@
 package jp.ac.dendai.c.jtp.Game;
 
 import jp.ac.dendai.c.jtp.Game.Bullet.Bullet;
+import jp.ac.dendai.c.jtp.Game.Bullet.BulletList;
+import jp.ac.dendai.c.jtp.Game.Bullet.BulletTemplate;
 import jp.ac.dendai.c.jtp.Game.Graphics.AnimationSprite;
 import jp.ac.dendai.c.jtp.Game.Graphics.BitmapList;
 import jp.ac.dendai.c.jtp.Physics.Collider.ICollider;
@@ -31,6 +33,9 @@ public class Player extends Bullet implements TouchListener {
 	protected boolean flag = false;
 	protected float alpha = 1;
 	protected AnimationSprite explosion;
+	protected int attackRate = 10;
+	protected int totalTime = 0;
+	protected BulletTemplate bt;
 	/**
 	 * 排他制御用のオブジェクト
 	 */
@@ -40,10 +45,13 @@ public class Player extends Bullet implements TouchListener {
 	 * コンストラクタ
 	 */
 	public Player(ICollider col, int id, float x, float y, float sizeX, float sizeY) {
-		super(col, id, x, y, 0, 0, sizeX, sizeY);
+		super(col, id, x, y, 0, 0, sizeX, sizeY
+				,GameScreen.COLLISION_MASK.ENEMYBULLET.getInt() & GameScreen.COLLISION_MASK.ENEMY.getInt()
+				,GameScreen.COLLISION_MASK.PLAYER.getInt());
 		degree = 45f;
 		lock = new Object();
 		explosion = new AnimationSprite(R.drawable.ship,10,-1,GLES20COMPOSITIONMODE.ADD);
+		bt = new BulletTemplate();
 	}
 
 	/**
@@ -104,11 +112,12 @@ public class Player extends Bullet implements TouchListener {
 			if (damageCounter < damageEffectTime) {
 				damageCounter++;
 			}
-			else if(damageCounter <= damageEffectTime + 20){
+			else if(damageCounter <= damageEffectTime + 40){
 				damageCounter++;
 				explosion.proc();
 			}
 			else {
+				explosion.resetAnimation();
 				d_state = DAMAGE_STATE.INVISIBLE;
 				damageCounter = 0;
 			}
@@ -129,6 +138,20 @@ public class Player extends Bullet implements TouchListener {
 				damageCounter = 0;
 			}
 		}
+		if(totalTime % attackRate == 0){
+			bt.imageId = R.drawable.bomd2;
+			bt.sizeX = 0.05f;
+			bt.sizeY = 0.05f;
+			bt.ux = 0;
+			bt.uy = 0.05f;
+			bt.x = position.getX();
+			bt.radius = 0.05f/2f;
+			bt.y = position.getY();
+			bt.tag = GameScreen.COLLISION_MASK.PLAYERBULLET.getInt();
+			bt.mask = GameScreen.COLLISION_MASK.ENEMY.getInt();
+			GameScreen.bulletList.add(bt);
+		}
+		totalTime++;
 	}
 
 	/**
@@ -137,8 +160,8 @@ public class Player extends Bullet implements TouchListener {
 	 */
 	public void Draw(float offsetX,float offsetY){//true 点有
 		synchronized (lock) {
-			GLES20Util.DrawGraph(position.getX() + offsetX, position.getY() + offsetY, sizeX, sizeY,degree, BitmapList.getBitmap(imageId), 1.0f, GLES20COMPOSITIONMODE.ALPHA);
-			GLES20Util.DrawGraph(position.getX() + offsetX, position.getY() + offsetY, collider.getRadius()*2.0f, collider.getRadius()*2.0f, BitmapList.getBitmap(R.drawable.bomd2), alpha, GLES20COMPOSITIONMODE.ALPHA);
+			GLES20Util.DrawGraph(position.getX() + offsetX, position.getY() + offsetY, sizeX, sizeY,degree, BitmapList.getBitmap(imageId), alpha, GLES20COMPOSITIONMODE.ALPHA);
+			GLES20Util.DrawGraph(position.getX() + offsetX, position.getY() + offsetY, collider.getRadius()*2.0f, collider.getRadius()*2.0f, BitmapList.getBitmap(R.drawable.bomd2), 1.0f, GLES20COMPOSITIONMODE.ALPHA);
 			if(d_state == DAMAGE_STATE.EFFECT) {
 				if(damageCounter <= damageEffectTime) {
 					float t = (float) damageEffectTime;
@@ -149,7 +172,7 @@ public class Player extends Bullet implements TouchListener {
 							, (1f / t) * c
 							, GLES20COMPOSITIONMODE.ADD);
 				}
-				else if(damageCounter <= damageEffectTime + 20) {
+				else if(damageCounter <= damageEffectTime + 40) {
 					explosion.draw(offsetX, offsetY, position, sizeX*2f, sizeY*2f, 1f, 0);
 				}
 			}

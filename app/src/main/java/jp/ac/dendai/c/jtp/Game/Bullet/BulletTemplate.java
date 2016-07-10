@@ -9,4 +9,5 @@ public class BulletTemplate {
     public float x,y;
     public float ux,uy;
     public float sizeX,sizeY;
+    public int mask,tag;
 }

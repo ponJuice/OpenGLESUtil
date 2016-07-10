@@ -15,6 +15,7 @@ public class AnimationSprite extends Sprite{
     private int roop;                       //0で停止　-1で無限
     private int animateTime,frameCounter;   //animationTime 次の画像にするまでの間の時間
     private Bitmap nowSprite;
+    private int frame = 0;
 
     public void setMode(GLES20COMPOSITIONMODE mode){
         this.mode = mode;
@@ -27,25 +28,34 @@ public class AnimationSprite extends Sprite{
         this.animateTime = animateTime;
         this.animationId = animationId;
         this.mode = mode;
-        nowSprite = BitmapList.getAnimationBitmap(animationId).get();
         this.roop = roop;
+    }
+
+    public void resetAnimation(){
+        frameCounter = 0;
+        frame = 0;
     }
 
     @Override
     public void draw(float offsetX, float offsetY, Vector2 position, float sizeX, float sizeY, float alpha, float degree) {
         if(roop != 0){
             if(animateTime <= frameCounter){
-                nowSprite = BitmapList.getAnimationBitmap(animationId).getNext();
+                frame++;
                 frameCounter = 0;
+                roop--;
             }
-            frameCounter++;
-            roop--;
         }
-        GLES20Util.DrawGraph(position.getX()+offsetX,position.getY()+offsetY,sizeX,sizeY, degree,nowSprite,alpha,mode);
+        GLES20Util.DrawGraph(position.getX()+offsetX
+                ,position.getY()+offsetY
+                ,sizeX
+                ,sizeY
+                ,degree
+                ,BitmapList.getAnimationBitmap(animationId).getAt(frame)
+                ,alpha,mode);
+        frameCounter++;
     }
 
     @Override
     public void proc() {
-        frameCounter++;
     }
 }

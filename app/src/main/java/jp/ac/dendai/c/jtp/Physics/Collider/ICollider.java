@@ -17,4 +17,9 @@ public interface ICollider {
     public void setPhysicsObject(IPhysics2D obj);
     public float getRadius();
     public void setRadius(float radius);
+    public void setMask(int mask);
+    public int getMask();
+    public int getTag();
+    public void setTag(int tag);
+    public boolean mask(ICollider col);
 }

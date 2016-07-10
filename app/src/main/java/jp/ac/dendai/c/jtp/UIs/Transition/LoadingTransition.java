@@ -44,7 +44,8 @@ public class LoadingTransition implements Transitionable {
 		if(mode == 1){
 			GameManager.nowScreen.Draw(0,0);
 			alpha += deltaAlpha;
-			GLES20Util.DrawGraph(0, 0, GLES20Util.getAspect()*2f, 2f, bitmap,alpha, GLES20COMPOSITIONMODE.ALPHA);
+			GLES20Util.DrawGraph(GLES20Util.getWidth_gl()/2f,GLES20Util.getHeight_gl()/2f,
+					GLES20Util.getWidth_gl(),GLES20Util.getHeight_gl(), bitmap,alpha, GLES20COMPOSITIONMODE.ALPHA);
 			GLES20Util.DrawString("NowLoading...", 1, 255,255,255,alpha, 0.5f, 0, GLES20COMPOSITIONMODE.ALPHA);
 			transitionTime--;
 			if(transitionTime <= 0)
@@ -52,7 +53,8 @@ public class LoadingTransition implements Transitionable {
 			return true;
 		}
 		else if(mode == 2){
-			GLES20Util.DrawGraph(0, 0, GLES20Util.getAspect()*2f, 2f, bitmap,1f, GLES20COMPOSITIONMODE.ALPHA);
+			GLES20Util.DrawGraph(GLES20Util.getWidth_gl()/2f,GLES20Util.getHeight_gl()/2f,
+					GLES20Util.getWidth_gl(),GLES20Util.getHeight_gl(), bitmap,1f, GLES20COMPOSITIONMODE.ALPHA);
 			GLES20Util.DrawString("NowLoading...", 1, 255,255,255,1f, 0.5f, 0, GLES20COMPOSITIONMODE.ALPHA);
 			try {
 				if(nextScreenClass != null)
@@ -80,7 +82,8 @@ public class LoadingTransition implements Transitionable {
 		}
 		else if(mode == 3){
 			GameManager.nowScreen.Draw(0,0);
-			GLES20Util.DrawGraph(0, 0, GLES20Util.getAspect()*2f, 2f, bitmap,alpha, GLES20COMPOSITIONMODE.ALPHA);
+			GLES20Util.DrawGraph(GLES20Util.getWidth_gl()/2f,GLES20Util.getHeight_gl()/2f,
+					GLES20Util.getWidth_gl(),GLES20Util.getHeight_gl(), bitmap,alpha, GLES20COMPOSITIONMODE.ALPHA);
 			GLES20Util.DrawString("NowLoading...", 1, 255,255,255,alpha, 0.5f, 0, GLES20COMPOSITIONMODE.ALPHA);
 			alpha -= deltaAlpha;
 			transitionTime--;

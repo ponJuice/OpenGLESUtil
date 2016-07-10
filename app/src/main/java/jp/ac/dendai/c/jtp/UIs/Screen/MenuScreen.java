@@ -7,6 +7,7 @@ import java.util.NavigableMap;
 import java.util.Objects;
 
 import jp.ac.dendai.c.jtp.Game.GameManager;
+import jp.ac.dendai.c.jtp.UIs.Transition.LoadingTransition;
 import jp.ac.dendai.c.jtp.UIs.Transition.ScrollTransition;
 import jp.ac.dendai.c.jtp.UIs.UI.Button;
 import jp.ac.dendai.c.jtp.UIs.UI.Listener.ButtonListener;
@@ -82,11 +83,14 @@ public class MenuScreen implements Screenable {
 
 	private void toGameScreen(){
 		GameManager.isTransition = true;
-		ScrollTransition.getInstance().setScrollTime(10);
-		ScrollTransition.getInstance().setDirect(GLES20Util.getAspect() * 2f, 0);
+		//ScrollTransition.getInstance().setScrollTime(10);
+		//ScrollTransition.getInstance().setDirect(GLES20Util.getAspect() * 2f, 0);
 		//GameManager.nextScreen = new StageSelectScreen();
-		GameManager.nextScreen = new GameScreen();
-		GameManager.transition = ScrollTransition.getInstance();
+		//GameManager.nextScreen = new GameScreen();
+		//GameManager.transition = ScrollTransition.getInstance();
+		LoadingTransition.getInstance().setNextScreen(new GameScreen());
+		LoadingTransition.getInstance().setTransitionTime(10);
+		GameManager.transition = LoadingTransition.getInstance();
 		nextScreen = TOSCREEN.NON;
 	}
 

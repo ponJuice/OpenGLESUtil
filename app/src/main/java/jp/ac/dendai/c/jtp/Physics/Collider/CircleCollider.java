@@ -31,6 +31,7 @@ public class CircleCollider extends Collider{
 
     @Override
     public boolean isCollision(ICollider col) {
+
         //二つのオブジェクトの距離ベクトルを計算
         buffer2D.zeroReset();
         buffer2D.copy(object.getPosition());

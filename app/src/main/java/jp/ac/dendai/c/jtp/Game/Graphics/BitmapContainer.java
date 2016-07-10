@@ -18,8 +18,9 @@ public class BitmapContainer {
         images[0] = image;
     }
     public Bitmap getAt(int index){
-        if(images.length > index)
-            return images[0];
+        index = index % images.length;
+        if(index < 0)
+            index = images.length + index;
         return images[index];
     }
     public Bitmap get(){
