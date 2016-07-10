@@ -7,4 +7,6 @@ public interface Screenable {
 	public void Draw(float offsetX,float offsetY);
 	public void Touch(MotionEvent event);
 	public void death();
+	public void freeze();
+	public void unFreeze();
 }

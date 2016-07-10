@@ -26,6 +26,8 @@ public class Player extends Bullet implements TouchListener {
 		INVISIBLE,
 	}
 
+	protected boolean isfreeze = false;
+	protected BulletList playerBulletList;
 	protected DAMAGE_STATE d_state = DAMAGE_STATE.NON;
 	protected int life = 3;
 	protected int damageEffectTime = 60;
@@ -48,10 +50,11 @@ public class Player extends Bullet implements TouchListener {
 		super(col, id, x, y, 0, 0, sizeX, sizeY
 				,GameScreen.COLLISION_MASK.ENEMYBULLET.getInt() & GameScreen.COLLISION_MASK.ENEMY.getInt()
 				,GameScreen.COLLISION_MASK.PLAYER.getInt());
-		degree = 45f;
+		degree = 0;
 		lock = new Object();
 		explosion = new AnimationSprite(R.drawable.ship,10,-1,GLES20COMPOSITIONMODE.ADD);
 		bt = new BulletTemplate();
+		playerBulletList = new BulletList(10);
 	}
 
 	/**
@@ -92,19 +95,35 @@ public class Player extends Bullet implements TouchListener {
 	 * 画面外に出ないようにする関数
 	 */
 	public void regulation() {
-		if (position.getX() < 0.0f) {
-			position.setX(0.0f);
+		if (position.getX() < sizeX/2f) {
+			position.setX(sizeX/2f);
 		}
-		if (position.getX() > (GLES20Util.getAspect() * 2.0f) - (1.0f * sizeX)) {
-			position.setX((GLES20Util.getAspect() * 2.0f) - (1.0f * sizeX));
+		if (position.getX() > (GLES20Util.getWidth_gl()-sizeX/2f)) {
+			position.setX(GLES20Util.getWidth_gl()-sizeX/2f);
 		}
-		if (position.getY() < 0.0f) {
-			position.setY(0.0f);
+		if (position.getY() < sizeY/2f) {
+			position.setY(sizeY/2f);
 		}
-		if (position.getY() > 2.0f - (1.0f * sizeY)) {
-			position.setY(2.0f - (1.0f * sizeY));
+		if (position.getY() > (2.0f - sizeY/2f)) {
+			position.setY(2.0f - sizeY/2f);
 		}
 		//Log.d("debug[Player][regulation]",String.valueOf(GLES20Util.getAspect()*2.0f));
+	}
+
+	public BulletList getBulletList(){
+		return playerBulletList;
+	}
+
+	public void freeze(){
+		isfreeze = true;
+	}
+
+	public void unfreeze(){
+		isfreeze = false;
+	}
+
+	public boolean getFreeze(){
+		return isfreeze;
 	}
 
 	public void proc() {
@@ -137,6 +156,10 @@ public class Player extends Bullet implements TouchListener {
 				d_state = DAMAGE_STATE.NON;
 				damageCounter = 0;
 			}
+			playerBulletList.update();
+		}
+		else{
+			playerBulletList.update();
 		}
 		if(totalTime % attackRate == 0){
 			bt.imageId = R.drawable.bomd2;
@@ -149,7 +172,7 @@ public class Player extends Bullet implements TouchListener {
 			bt.y = position.getY();
 			bt.tag = GameScreen.COLLISION_MASK.PLAYERBULLET.getInt();
 			bt.mask = GameScreen.COLLISION_MASK.ENEMY.getInt();
-			GameScreen.bulletList.add(bt);
+			playerBulletList.add(bt);
 		}
 		totalTime++;
 	}
@@ -176,6 +199,7 @@ public class Player extends Bullet implements TouchListener {
 					explosion.draw(offsetX, offsetY, position, sizeX*2f, sizeY*2f, 1f, 0);
 				}
 			}
+			playerBulletList.drawAll(offsetX,offsetY);
 		}
 	}
 
@@ -219,7 +243,7 @@ public class Player extends Bullet implements TouchListener {
 
 	@Override
 	public void execute(Touch t) {
-		if(GameScreen.isFreeze() || isDead() || d_state == DAMAGE_STATE.EFFECT)
+		if(GameScreen.isFreeze() || isDead() || d_state == DAMAGE_STATE.EFFECT || isfreeze)
 			return;
 		synchronized (lock) {
 			position.setX(position.getX() - GLES20Util.getWidth_gl() / GLES20Util.getWidth() * (t.getDelta(Touch.Pos_Flag.X) * Constant.getSens()));

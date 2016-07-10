@@ -8,8 +8,12 @@ import jp.ac.dendai.c.jtp.openglesutil.core.GLES20Util;
 import jp.ac.dendai.c.jtp.openglesutil.graphic.blending_mode.GLES20COMPOSITIONMODE;
 
 public class StageSelectScreen implements Screenable {
+	private boolean isFreeze = false;
+
 	@Override
 	public void Proc() {
+		if(isFreeze)
+			return;
 
 	}
 
@@ -33,6 +37,16 @@ public class StageSelectScreen implements Screenable {
 	@Override
 	public void death() {
 
+	}
+
+	@Override
+	public void freeze() {
+		isFreeze = true;
+	}
+
+	@Override
+	public void unFreeze() {
+		isFreeze = false;
 	}
 
 }

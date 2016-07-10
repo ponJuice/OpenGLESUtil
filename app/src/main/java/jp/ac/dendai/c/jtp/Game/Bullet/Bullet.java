@@ -18,6 +18,7 @@ public class Bullet extends Physics2D {
     protected int imageId;
     protected float sizeX,sizeY;
     protected float degree = 0;
+    protected int attackValue = 1;
     public Bullet(ICollider c,int imageId,float x,float y,float ux,float uy,float sizeX,float sizeY,int mask,int tag){
         super();
         this.imageId = imageId;
@@ -54,6 +55,10 @@ public class Bullet extends Physics2D {
         collider.setTag(bt.tag);
 
         allive = true;
+    }
+
+    public int getAttackValue(){
+        return attackValue;
     }
 
     public void collisionPlayerProc(Player player){

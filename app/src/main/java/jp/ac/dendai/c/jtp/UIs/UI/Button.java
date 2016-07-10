@@ -70,13 +70,13 @@ public class Button {
 	private ButtonListener listener;
 
 	public Button(float x,float y,float lengthX,float lengthY,float alpha,int background,String text){
-		this.text = new Text(text);
+		this.text = new Text(text,255,255,255);
 		backgroundId = background;
 		init(x,y,lengthX,lengthY,alpha);
 	}
 
 	public Button(float x,float y,float lengthX,float lengthY,float alpha,String text,int a,int r,int g,int b){
-		this.text = new Text(text);
+		this.text = new Text(text,255,255,255);
 		image = GLES20Util.createBitmap(r, g, b,a);
 		init(x,y,lengthX,lengthY,alpha);
 	}

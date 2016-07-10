@@ -2,6 +2,8 @@ package jp.ac.dendai.c.jtp.Game.Bullet;
 
 import android.opengl.GLES20;
 
+import jp.ac.dendai.c.jtp.Game.Enemy.Enemy;
+import jp.ac.dendai.c.jtp.Game.Enemy.EnemyList;
 import jp.ac.dendai.c.jtp.Game.Player;
 import jp.ac.dendai.c.jtp.Physics.Physics.IPhysics2D;
 import jp.ac.dendai.c.jtp.UIs.Screen.GameScreen;
@@ -58,6 +60,16 @@ public class BulletList{
             }
         }
         return false;
+    }
+    public void playerBulletCollision(EnemyList.EnemyListContainer e){
+        RecycleRingList<Bullet>.RecycleRingListIterator<Bullet> ite = rrl.getIterator();
+        while(ite.hasNext()){
+            Bullet b = ite.next().getObject();
+            if(b.isCollision(e.getObject()) && b.getCollider().mask(e.getObject().getCollider())){
+                //衝突
+                e.getObject().damage(b.getAttackValue());
+            }
+        }
     }
 
     @Override

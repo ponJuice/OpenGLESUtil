@@ -2,6 +2,7 @@ package jp.ac.dendai.c.jtp.UIs.UI.Text;
 
 import android.graphics.Bitmap;
 
+import jp.ac.dendai.c.jtp.MainActivity;
 import jp.ac.dendai.c.jtp.UIs.UI.UIAlign;
 import jp.ac.dendai.c.jtp.openglesutil.core.GLES20Util;
 import jp.ac.dendai.c.jtp.openglesutil.graphic.blending_mode.GLES20COMPOSITIONMODE;
@@ -37,7 +38,7 @@ public class NumberText{
     public void draw(int number,int digitLength,float x,float y,float size,float alpha,GLES20COMPOSITIONMODE mode) {
         if (number < 0)//未満ならば0で表示
             number = 0;
-        int l = digitLength;
+        int l = Math.max(digitLength,(int)Math.log10(number)+1);
         float length = NumbersBitmapList.getWide(fontName,number,writtingAlign);
 
         if(verticalTextAlign == Text.TextAlign.BOTTOM){
@@ -45,7 +46,7 @@ public class NumberText{
         }else if(verticalTextAlign == Text.TextAlign.TOP){
             if(writtingAlign == Text.WrittingAlign.HOLIZONTAL){
                 //横書き
-                y += NumbersBitmapList.getHeight(fontName,number,1)/2f;
+                y -= NumbersBitmapList.getHeight(fontName,number,1)/4f;
             }else{
                 //縦書き
                 y += length - NumbersBitmapList.getHeight(fontName,number,l)/2f;
@@ -94,6 +95,7 @@ public class NumberText{
     }
 
     public static int getDigit(int num,int digit){
+        int m = pow(10, digit - 1);
         return num / pow(10, digit - 1) % 10;
     }
 
@@ -102,11 +104,12 @@ public class NumberText{
     }
 
     public static int pow(int n,int d){
+        int m = n;
         if(d <= 0)
             return 1;
         for(int l = 1;l < d;l++){
-            n *= n;
+            m *= n;
         }
-        return n;
+        return m;
     }
 }

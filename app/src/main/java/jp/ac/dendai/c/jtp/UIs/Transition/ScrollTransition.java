@@ -27,6 +27,8 @@ public class ScrollTransition implements Transitionable {
 	@Override
 	public boolean Transition() {
 		if(frameBuffer < scrollTime){
+			GameManager.nowScreen.freeze();
+			GameManager.nextScreen.freeze();
 			GameManager.nowScreen.Draw(-offsetX, -offsetY);
 			GameManager.nextScreen.Draw(GLES20Util.getAspect()*2f-offsetX, -offsetY);
 
@@ -37,11 +39,14 @@ public class ScrollTransition implements Transitionable {
 			return true;
 		}
 		else{
+			GameManager.nowScreen.unFreeze();
+			GameManager.nextScreen.unFreeze();
 			GameManager.nowScreen.death();
 			GameManager.nowScreen = GameManager.nextScreen;
 			offsetX = 0;
 			offsetY = 0;
 			frameBuffer = 0;
+
 			return false;
 		}
 	}

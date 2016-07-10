@@ -20,6 +20,7 @@ public class MenuScreen implements Screenable {
 		NON,
 		GAMESCREEN
 	}
+	private boolean isFreese = false;
 	private TOSCREEN nextScreen = TOSCREEN.NON;
 	private Object lock;
 	private static MenuScreen instance;
@@ -31,7 +32,7 @@ public class MenuScreen implements Screenable {
 	private MenuScreen(){
 		b_content = new Text[content.length];
 		for(int n=0;n<content.length;n++){
-			b_content[n] = new Text(content[n]);
+			b_content[n] = new Text(content[n],255,255,255);
 			b_content[n].setHorizontalTextAlign(Text.TextAlign.CENTOR);
 			b_content[n].setVerticalTextAlign(Text.TextAlign.CENTOR);
 		}
@@ -49,6 +50,8 @@ public class MenuScreen implements Screenable {
 
 	@Override
 	public void Proc() {
+		if(isFreese)
+			return;
 		if(nextScreen == TOSCREEN.GAMESCREEN)
 			toGameScreen();
 	}
@@ -79,6 +82,16 @@ public class MenuScreen implements Screenable {
 	@Override
 	public void death() {
 
+	}
+
+	@Override
+	public void freeze() {
+		isFreese = true;
+	}
+
+	@Override
+	public void unFreeze() {
+		isFreese = false;
 	}
 
 	private void toGameScreen(){

@@ -146,6 +146,12 @@ public abstract class abstractGLES20Util {
 
 	};
 
+	/**
+	 *
+	 * モデル配列
+	 */
+	protected static float[] modelMatrix = new float[16];
+
 	public static float getWidth(){
 		return Width;
 	}
@@ -354,7 +360,7 @@ public abstract class abstractGLES20Util {
 		float scaleX = lengthX;
 		float scaleY = lengthY;
 
-		float[] modelMatrix = new float[16];
+		//float[]modelMatrix = new float[16];
 		Matrix.setIdentityM(modelMatrix, 0);
 		Matrix.translateM(modelMatrix,0,startX-aspect,startY-1.0f,0.0f);
 		Matrix.scaleM(modelMatrix,0,scaleX,scaleY,1.0f);
