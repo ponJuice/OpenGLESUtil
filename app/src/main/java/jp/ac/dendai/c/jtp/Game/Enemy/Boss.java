@@ -25,6 +25,12 @@ import jp.ac.dendai.c.jtp.openglesutil.graphic.blending_mode.GLES20COMPOSITIONMO
  * Created by Goto on 2016/07/11.
  */
 public class Boss extends Enemy{
+    private enum HPSTATE{
+        MAX,
+        HALF,
+        LOW
+    }
+
     private class AnimationPoint{
         public int frame,startFrame,updateFrame;
         public Vector2 position;
@@ -36,15 +42,20 @@ public class Boss extends Enemy{
             sizeY = 0.01f;
         }
         public void update(int f){
+            if(updateFrame <= 0)
+                return;
             if((f - this.startFrame) % updateFrame == 0){
                 frame++;
             }
         }
     }
-
+    protected HPSTATE hpState;
     protected NumberText hpText;
+    protected int maxHP;
     protected AnimationPoint[] frames;
+    protected AnimationPoint[] damageAnime;
     protected Random ram;
+    protected int hpStateCounter = 0;
     protected BarrageList barrageList;
 
     public Boss(int imageId, float x, float y, float sizeX, float sizeY, float radius, int hp, int deadAnimationId, int effectDelta, int endTime, int score) {
@@ -54,11 +65,15 @@ public class Boss extends Enemy{
         this.hpText.setVerticalTextAlign(Text.TextAlign.TOP);
         this.hpText.setWrittingAlign(Text.WrittingAlign.HOLIZONTAL);
 
+        hpState = HPSTATE.MAX;
+        maxHP = hp;
+
+
         //攻撃のパターン作成
         barrageList = new BarrageList();
-        Barrage temp = new LinearOneBarrage(R.drawable.bomd2, GameScreen.COLLISION_MASK.PLAYER.getInt(), GameScreen.COLLISION_MASK.ENEMYBULLET.getInt(), 0, -0.05f, 5, 0, 60);
+        Barrage temp = new LinearOneBarrage(R.drawable.bomd2, GameScreen.COLLISION_MASK.PLAYER.getInt(), GameScreen.COLLISION_MASK.ENEMYBULLET.getInt(), 0, -0.05f, 5, 0, 300);
         barrageList.add(temp);
-        temp = new Radiationbarrage(R.drawable.bomd2, GameScreen.COLLISION_MASK.PLAYER.getInt(),GameScreen.COLLISION_MASK.ENEMYBULLET.getInt(),temp.getEndTime(),120,5,10,0,10f,0.01f);
+        temp = new Radiationbarrage(R.drawable.bomd2, GameScreen.COLLISION_MASK.PLAYER.getInt(),GameScreen.COLLISION_MASK.ENEMYBULLET.getInt(),300,300,5,10,0,10f,0.01f);
         barrageList.add(temp);
 
         ram = new Random();
@@ -66,6 +81,12 @@ public class Boss extends Enemy{
         frames = new AnimationPoint[5];
         for(int n = 0;n < frames.length;n++){
             frames[n] = new AnimationPoint();
+        }
+
+        damageAnime = new AnimationPoint[5];
+        for(int n = 0;n < damageAnime.length;n++){
+            damageAnime[n] = new AnimationPoint();
+            damageAnime[n].frame = -1;
         }
     }
 
@@ -106,14 +127,23 @@ public class Boss extends Enemy{
             GLES20Util.DrawGraph(offsetX + position.getX(), offsetY + position.getY(), sizeY, sizeY, BitmapList.getAnimationBitmap(deadAnimationId).getAt(frame), 1f, GLES20COMPOSITIONMODE.ADD);
         }
 
+
+        if(hpState == HPSTATE.LOW || hpState == HPSTATE.HALF){
+            for(AnimationPoint n : damageAnime) {
+                if(n.frame >= 0)
+                    GLES20Util.DrawGraph(offsetX + n.position.getX(), offsetY + n.position.getY(), n.sizeX, n.sizeY, BitmapList.getAnimationBitmap(deadAnimationId).getAt(n.frame - 1), 1f, GLES20COMPOSITIONMODE.ADD);
+            }
+            hpStateCounter++;
+        }
+
         for(AnimationPoint n : frames){
             if(n.frame >= 0){
                 GLES20Util.DrawGraph(offsetX+n.position.getX(),offsetY+n.position.getY(),n.sizeX,n.sizeY,BitmapList.getAnimationBitmap(deadAnimationId).getAt(n.frame-1),1f,GLES20COMPOSITIONMODE.ADD);
             }
         }
 
-        debugDraw(offsetX,offsetY);
-        hpText.draw(HP, 3, offsetX + position.getX(), offsetY + position.getY(), 1f, 1f, GLES20COMPOSITIONMODE.ALPHA);
+        //debugDraw(offsetX,offsetY);
+        //hpText.draw(HP, 3, offsetX + position.getX(), offsetY + position.getY(), 1f, 1f, GLES20COMPOSITIONMODE.ALPHA);
     }
 
     @Override
@@ -146,6 +176,14 @@ public class Boss extends Enemy{
                     n.update(timeCounter);
                 }
             }
+            for(AnimationPoint n : damageAnime){
+                if(n.frame >= BitmapList.getAnimationBitmap(deadAnimationId).getBitmapCount()){
+                    n.frame = -1;
+                }
+                else if(n.frame >= 0){
+                    n.update(hpStateCounter);
+                }
+            }
             if(time >= startTime) {
                 int temp = timeCounter % endTime;
                 for (Action a : actions) {
@@ -164,6 +202,36 @@ public class Boss extends Enemy{
                 }*/
                 barrageList.proc(timeCounter%barrageList.getTotalTime(),GameScreen.bulletList,position.getX(),position.getY());
                 timeCounter++;
+            }
+            if(((float)HP / (float)maxHP) < 0.2f){
+                for(AnimationPoint n : damageAnime) {
+                    if (n.frame < 0 || n.frame >= 4) {
+                        n.position.setX(this.position.getX()+ram.nextFloat()*0.3f-0.15f);
+                        n.position.setY(this.position.getY()+ram.nextFloat()*0.3f-0.15f);
+                        n.sizeX = ram.nextFloat() * 0.25f;
+                        n.sizeY = n.sizeX;
+                        n.updateFrame = ram.nextInt(20) + 10;
+                        n.startFrame = hpStateCounter;
+                        n.frame++;
+                        break;
+                    }
+                }
+                hpState = HPSTATE.LOW;
+            }
+            else if(((float)HP / (float)maxHP) < 0.5f){
+                for(AnimationPoint n : damageAnime) {
+                    if (n.frame < 0 || n.frame >= 4) {
+                        n.position.setX(this.position.getX()+ram.nextFloat()*0.3f-0.15f);
+                        n.position.setY(this.position.getY()+ram.nextFloat()*0.3f-0.15f);
+                        n.sizeX = ram.nextFloat() * 0.25f;
+                        n.sizeY = n.sizeX;
+                        n.updateFrame = ram.nextInt(20) + 10;
+                        n.startFrame = hpStateCounter;
+                        n.frame++;
+                        break;
+                    }
+                }
+                hpState = HPSTATE.HALF;
             }
         }
     }

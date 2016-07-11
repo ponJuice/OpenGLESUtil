@@ -54,11 +54,11 @@ public class Text {
 	}
 
 	public float getLengthX(){
-		return bitmap.getWidth() / (scaleX*2000f);
+		return bitmap.getWidth() / 1000f * scaleX;
 	}
 
 	public float getLengthY(){
-		return bitmap.getHeight() / (scaleY*2000f);
+		return bitmap.getHeight() /  1000f * scaleY;
 	}
 
 
@@ -68,22 +68,22 @@ public class Text {
 			this.x = 0;
 		}
 		else if(horizontalTextAlign == TextAlign.RIGHT){
-			this.x = bitmap.getWidth()/(scaleX*2000f);
+			this.x = bitmap.getWidth()/ 2000f * scaleX;
 		}
 		else{
-			this.x = -bitmap.getWidth()/(scaleX*2000f);
+			this.x = -bitmap.getWidth()/ 2000f*scaleX;
 		}
 		if(verticalTextAlign == TextAlign.CENTOR){
 			//this.y = bitmap.getHeight()/(scaleY*2000f);
 			this.y = 0;
 		}
 		else if(verticalTextAlign == TextAlign.TOP){
-			this.y = bitmap.getHeight()/(scaleY*4000f);
+			this.y = bitmap.getHeight()/ 2000f * scaleY;
 		}
 		else{
-			this.y = -bitmap.getHeight()/(scaleY*4000f);
+			this.y = -bitmap.getHeight()/ 2000f * scaleY;
 		}
-		GLES20Util.DrawGraph(x-this.x, y-this.y, bitmap.getWidth()/(scaleX*1000f), bitmap.getHeight()/(scaleY*1000f), bitmap,alpha,mode);
+		GLES20Util.DrawGraph(x-this.x, y-this.y, bitmap.getWidth()/ 1000f * scaleX, bitmap.getHeight()/ 1000f * scaleY, bitmap,alpha,mode);
 	}
 
 	public void setAlpha(float a){

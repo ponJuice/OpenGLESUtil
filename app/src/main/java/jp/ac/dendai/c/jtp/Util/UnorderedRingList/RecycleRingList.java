@@ -15,7 +15,7 @@ public class RecycleRingList<T>{
     protected int[] info;
     protected int info_add;
     protected int info_remove;
-    protected RecycleRingListContainer<T> first,end;
+    public RecycleRingListContainer<T> first,end;
     public RecycleRingList(int maxData){
         max = maxData;
         data = new RecycleRingListContainer[max];

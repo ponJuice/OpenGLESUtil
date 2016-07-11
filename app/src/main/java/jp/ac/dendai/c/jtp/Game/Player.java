@@ -26,7 +26,7 @@ public class Player extends Bullet implements TouchListener {
 		INVISIBLE,
 	}
 
-	protected boolean debugInvisible = false;
+	protected boolean debugInvisible = true;
 	protected boolean isfreeze = false;
 	protected BulletList playerBulletList;
 	protected DAMAGE_STATE d_state = DAMAGE_STATE.NON;
@@ -56,6 +56,7 @@ public class Player extends Bullet implements TouchListener {
 		explosion = new AnimationSprite(R.drawable.ship,10,-1,GLES20COMPOSITIONMODE.ADD);
 		bt = new BulletTemplate();
 		playerBulletList = new BulletList(10);
+		debugInvisible = GameManager.debug;
 	}
 
 	/**

@@ -44,8 +44,12 @@ public class BulletList{
             temp.getObject().updatePosition(1);
 
             //画面外にでたら非活性化
-            if(temp.getObject().getPosition().getX() < -temp.getObject().getSizeX()/2.0f || temp.getObject().getPosition().getX() > GLES20Util.getWidth_gl()+temp.getObject().getSizeX()/2.0f
-                    || temp.getObject().getPosition().getY() < temp.getObject().getSizeY()/2.0f || temp.getObject().getPosition().getY() > GLES20Util.getHeight_gl()+temp.getObject().getSizeY()/2.0){
+            /*if(temp.getObject().getPosition().getX() < -temp.getObject().getSizeX()/2.0f || temp.getObject().getPosition().getX() > GLES20Util.getWidth_gl()+temp.getObject().getSizeX()/2.0f
+                    || temp.getObject().getPosition().getY() < -temp.getObject().getSizeY()/2.0f || temp.getObject().getPosition().getY() > GLES20Util.getHeight_gl()+temp.getObject().getSizeY()/2.0){
+                temp.recycleRingList_Remove();
+            }*/
+            if(temp.getObject().getPosition().getX() < 0 || temp.getObject().getPosition().getX() > GLES20Util.getWidth_gl()-temp.getObject().getSizeX()/2.0f
+                    || temp.getObject().getPosition().getY() <0  || temp.getObject().getPosition().getY() > GLES20Util.getHeight_gl()-temp.getObject().getSizeY()/2.0){
                 temp.recycleRingList_Remove();
             }
         }

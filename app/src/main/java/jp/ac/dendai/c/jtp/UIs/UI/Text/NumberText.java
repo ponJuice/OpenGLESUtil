@@ -35,7 +35,7 @@ public class NumberText{
         writtingAlign = wa;
     }
 
-    public void draw(int number,int digitLength,float x,float y,float size,float alpha,GLES20COMPOSITIONMODE mode) {
+    public float draw(int number,int digitLength,float x,float y,float size,float alpha,GLES20COMPOSITIONMODE mode) {
         if (number < 0)//未満ならば0で表示
             number = 0;
         int l = Math.max(digitLength,(int)Math.log10(number)+1);
@@ -81,16 +81,26 @@ public class NumberText{
             }
         }
 
+        Bitmap bitmap = null;
         for (int n = 0; n < l; n++) {
-            Bitmap bitmap = NumbersBitmapList.getNumbersBitmap(fontName).getNumber(getDigit(number,l-n));
-            GLES20Util.DrawGraph(x, y, bitmap.getWidth() / (size * 1000f), bitmap.getHeight() / (size * 1000f), bitmap, 1f, mode);
+            bitmap = NumbersBitmapList.getNumbersBitmap(fontName).getNumber(getDigit(number,l-n));
+            GLES20Util.DrawGraph(x, y, bitmap.getWidth() / 1000f * size, bitmap.getHeight()/ 1000f*size, bitmap, 1f, mode);
             if(writtingAlign == Text.WrittingAlign.HOLIZONTAL) {
-                x += bitmap.getWidth() / (size * 1000f);
+                x += bitmap.getWidth() / 1000f * size;
             }else {
-                y += bitmap.getHeight() / (size * 1000f);
+                y += bitmap.getHeight() / 1000f * size;
             }
 
             number -= getNumTruncation(number,l-n);
+        }
+        if(bitmap == null)
+            return 0;
+        else {
+            if (writtingAlign == Text.WrittingAlign.HOLIZONTAL) {
+                return x + bitmap.getWidth() / 1000f * size;
+            } else {
+                return y + bitmap.getHeight() / 1000f * size;
+            }
         }
     }
 

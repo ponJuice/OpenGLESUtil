@@ -45,7 +45,7 @@ public class Radiationbarrage extends Barrage {
      * @param degree
      */
     public void setDeltaOffsetRad(float degree){
-        this.deltaRad = degree;
+        this.deltaRad = (float)Math.toRadians(degree);
     }
 
     @Override
@@ -55,8 +55,8 @@ public class Radiationbarrage extends Barrage {
                 if(drawCounter >= attackCount)
                     drawCounter = 0;
                 for (int n = 0; n < bulletNum; n++) {
-                    bt.ux = speed*(float)Math.cos((2.0 * Math.PI)/(double)(bulletNum * n) + offsetRad + (deltaRad * drawCounter));
-                    bt.uy = speed*(float)Math.sin((2.0 * Math.PI)/(double)(bulletNum * n) + offsetRad + (deltaRad * drawCounter));
+                    bt.ux = speed*(float)Math.cos(Math.toRadians(360.0/(double)bulletNum * (double)n) + offsetRad + (deltaRad * drawCounter));
+                    bt.uy = speed*(float)Math.sin(Math.toRadians(360.0/(double)bulletNum * (double)n) + offsetRad + (deltaRad * drawCounter));
                     bt.x = x;
                     bt.y = y;
                     bulletList.add(bt);

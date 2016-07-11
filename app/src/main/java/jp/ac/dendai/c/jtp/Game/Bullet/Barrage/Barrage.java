@@ -37,6 +37,8 @@ public abstract class Barrage {
         bt.imageId = imageId;
         this.startTime = startTime;
         this.endTime = startTime + lengthTime;
+        bt.mask = mask;
+        bt.tag = tag;
     }
     public abstract void proc(int time,BulletList bulletList,float x,float y);
 

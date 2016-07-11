@@ -1,5 +1,6 @@
 package jp.ac.dendai.c.jtp.UIs.Screen;
 
+import android.graphics.Bitmap;
 import android.view.MotionEvent;
 
 import jp.ac.dendai.c.jtp.Game.Enemy.Boss;
@@ -61,16 +62,18 @@ public class GameScreen implements Screenable {
     private static boolean isFreeze;
     public static EnemyList enemyList;
     public static BulletList bulletList;
+    private Bitmap black;
     private Player player;
     private Enemy enemy;
     private NumberText nt;          //デバッグ用
     private NumberText scoreNumber;
-    private Text scoreText;
+    private Text scoreText,zankiAdd,total;
     private Button backToMenuButton;
     private BitmapContainer bc;
     private int totalTime = 0;
     private BackGround background;
     private Text stageCrear,gameOverText;
+    protected int clearEffectCounter=0;
 
     private int counter = 0; //でバグ
 
@@ -85,15 +88,16 @@ public class GameScreen implements Screenable {
         //画像リソース読み込み
         BitmapList.setBitmap(R.drawable.damage_effect);
         BitmapList.setBitmap(R.drawable.back);
+        black = GLES20Util.createBitmap(0,0,0,255);
 
         /*****************************************************/
 
         /*****************************************************/
         //ゲームオーバー用ボタン
 
-        gameOverText = new Text("GAME OVER",255,255,255);
-        gameOverText.setScaleX(0.5f);
-        gameOverText.setScaleY(0.5f);
+        gameOverText = new Text("GAME OVER",255,29,0);
+        gameOverText.setScaleX(1.5f);
+        gameOverText.setScaleY(1.5f);
         gameOverText.setHorizontalTextAlign(Text.TextAlign.CENTOR);
         gameOverText.setVerticalTextAlign(Text.TextAlign.CENTOR);
 
@@ -115,9 +119,9 @@ public class GameScreen implements Screenable {
 
         /***************************************************/
         //ゲームクリアボタン
-        stageCrear = new Text("STAGE CLEAR",255,255,255);
-        stageCrear.setScaleX(0.5f);
-        stageCrear.setScaleY(0.5f);
+        stageCrear = new Text("STAGE CLEAR",82,162,197);
+        stageCrear.setScaleX(1.5f);
+        stageCrear.setScaleY(1.5f);
         stageCrear.setHorizontalTextAlign(Text.TextAlign.CENTOR);
         stageCrear.setVerticalTextAlign(Text.TextAlign.CENTOR);
 
@@ -140,7 +144,20 @@ public class GameScreen implements Screenable {
         scoreText = new Text("SCORE",255,255,255);
         scoreText.setHorizontalTextAlign(Text.TextAlign.LEFT);
         scoreText.setVerticalTextAlign(Text.TextAlign.TOP);
+        scoreText.setScaleY(0.5f);
+        scoreText.setScaleX(0.5f);
 
+        zankiAdd = new Text(" + 200×残機",255,255,255);
+        zankiAdd.setHorizontalTextAlign(Text.TextAlign.LEFT);
+        zankiAdd.setVerticalTextAlign(Text.TextAlign.BOTTOM);
+        zankiAdd.setScaleX(0.7f);
+        zankiAdd.setScaleY(0.7f);
+
+        total = new Text("TOTAL : ",255,255,255);
+        total.setHorizontalTextAlign(Text.TextAlign.LEFT);
+        total.setVerticalTextAlign(Text.TextAlign.BOTTOM);
+        total.setScaleX(1.3f);
+        total.setScaleY(1.3f);
         /***************************************************/
 
         /****************************************************/
@@ -157,10 +174,10 @@ public class GameScreen implements Screenable {
         /*****************************************************/
 
         /*****************************************************/
-        //デバッグ用
+        //リザルトスコア
         nt = new NumberText();
         nt.setHorizontalTextAlign(Text.TextAlign.LEFT);
-        nt.setVerticalTextAlign(Text.TextAlign.CENTOR);
+        nt.setVerticalTextAlign(Text.TextAlign.BOTTOM);
         nt.setWrittingAlign(Text.WrittingAlign.HOLIZONTAL);
 
         /****************************************************/
@@ -180,12 +197,11 @@ public class GameScreen implements Screenable {
         Boss boss = new Boss(BitmapList.setBitmap(R.drawable.boss),GLES20Util.getWidth_gl()/2f,GLES20Util.getHeight_gl()+0.5f/2f,0.5f*2f,0.219f*2f,0.05f,100,R.drawable.ship,10,40,1000);
         boss.getCollider().setRadius(0.219f);
         boss.setStartTime(180);
-        boss.addAction(Action.moveRelative(GLES20Util.getWidth_gl()/ 2f, GLES20Util.getHeight_gl() - 0.219f / 2f - 0.1f,
-                60, 0));
-        boss.addAction(Action.moveRelative(GLES20Util.getWidth_gl()-0.5f/2f,GLES20Util.getHeight_gl()-0.219f/2f-0.1f,
-                        60,60));
-        boss.addAction(Action.moveRelative(0.5f / 2f, GLES20Util.getHeight_gl() - 0.219f / 2f - 0.1f,
-                120, 120));
+        boss.addAction(Action.moveRelative(GLES20Util.getWidth_gl() / 2f, GLES20Util.getHeight_gl() - 0.219f / 2f - 0.1f, 60, 0));
+        boss.addAction(Action.moveRelative(GLES20Util.getWidth_gl()-0.5f/2f,GLES20Util.getHeight_gl()-0.219f/2f-0.1f,    60,60));
+        boss.addAction(Action.moveRelative(0.5f / 2f, GLES20Util.getHeight_gl() - 0.219f / 2f - 0.1f, 120, 120));
+        boss.addAction(Action.moveRelative(GLES20Util.getWidth_gl() / 2f, GLES20Util.getHeight_gl() - 0.219f / 2f - 0.1f, 60, 240));
+        boss.addAction(Action.moveRelative(GLES20Util.getWidth_gl() / 2f, GLES20Util.getHeight_gl() - 0.219f / 2f - 0.1f, 330, 300));
         enemyList.addEnemys(boss, 1);
         //プレイヤーコントロール用リスナ登録
         Input.getTouchArray()[0].addTouchListener(this.player);
@@ -222,9 +238,11 @@ public class GameScreen implements Screenable {
         else if(player.isDead()) {
             //ゲームオーバー
             gameState = GAMESTATE.GAMEOVER;
+            clearEffectCounter++;
             return;
         }else if(gameState == GAMESTATE.CLEAR){
             player.freeze();
+            clearEffectCounter++;
         }else if(player.getDamageFlag() != Player.DAMAGE_STATE.EFFECT) {
             //敵の移動
             enemyList.update();
@@ -259,33 +277,90 @@ public class GameScreen implements Screenable {
         //GLES20Util.DrawGraph(0.5f,0.5f,0.1f,0.1f,BitmapList.getAnimationBitmap(R.drawable.preset).getAt(debugFrameCounter),1f,GLES20COMPOSITIONMODE.ALPHA);
         //debugFrameCounter++;
 
-        if(gameState == GAMESTATE.GAMEOVER){
+        /*if(gameState == GAMESTATE.GAMEOVER){
             backToMenuButton.setEnable(true);
-            gameOverText.draw(offsetX + GLES20Util.getWidth_gl() / 2f,offsetY + GLES20Util.getHeight_gl() / 2f + 0.3f, 1f, GLES20COMPOSITIONMODE.ALPHA);;
-            backToMenuButton.draw(offsetX,offsetY);
-        }else if(gameState == GAMESTATE.CLEAR){
-            backToMenuButton.setEnable(true);
-            stageCrear.draw(offsetX + GLES20Util.getWidth_gl()/2f,offsetY +GLES20Util.getHeight_gl()/2f+0.3f,1f,GLES20COMPOSITIONMODE.ALPHA);
-            backToMenuButton.draw(offsetX,offsetY);
+            gameOverText.draw(offsetX + GLES20Util.getWidth_gl() / 2f,offsetY + GLES20Util.getHeight_gl() / 2f + 0.3f, 1f, GLES20COMPOSITIONMODE.ALPHA);
+            backToMenuButton.draw(offsetX,offsetY);*/
+        if(gameState == GAMESTATE.CLEAR || gameState == GAMESTATE.GAMEOVER){
+            if(clearEffectCounter <= 120){
+                GLES20Util.DrawGraph(GLES20Util.getWidth_gl()/2f,GLES20Util.getHeight_gl()/2f,GLES20Util.getWidth(),GLES20Util.getHeight_gl(),black,clearEffectCounter/120f*0.8f,GLES20COMPOSITIONMODE.ALPHA);
+            }else if(clearEffectCounter <= 180){
+                GLES20Util.DrawGraph(GLES20Util.getWidth_gl() / 2f, GLES20Util.getHeight_gl() / 2f, GLES20Util.getWidth(), GLES20Util.getHeight_gl(), black, 0.8f, GLES20COMPOSITIONMODE.ALPHA);
+                if(gameState == GAMESTATE.GAMEOVER){
+                    gameOverText.draw(offsetX + GLES20Util.getWidth_gl() / 2f,offsetY + GLES20Util.getHeight_gl() / 2f + 0.8f, 1f, GLES20COMPOSITIONMODE.ALPHA);
+                }else{
+                    stageCrear.draw(offsetX + GLES20Util.getWidth_gl() / 2f, offsetY + GLES20Util.getHeight_gl() / 2f + 0.8f, 1f, GLES20COMPOSITIONMODE.ALPHA);
+                }
+                scoreText.setScaleX(1.2f);
+                scoreText.setScaleY(1.2f);
+                scoreText.setVerticalTextAlign(Text.TextAlign.BOTTOM);
+                int a = clearEffectCounter - 120;
+                scoreText.draw(offsetX + 0.05f
+                        , offsetY + GLES20Util.getHeight_gl() / 2f + 0.5f
+                        , 1f
+                        , GLES20COMPOSITIONMODE.ALPHA);
+                float buff = nt.draw(score / 60 * a,4
+                        ,offsetX+0.05f + 0.05f + scoreText.getLengthX()
+                        ,offsetY + GLES20Util.getHeight_gl() / 2f + 0.5f
+                        ,1f,1,GLES20COMPOSITIONMODE.ALPHA);
+            }else{
+                backToMenuButton.setEnable(true);
+                GLES20Util.DrawGraph(GLES20Util.getWidth_gl() / 2f, GLES20Util.getHeight_gl() / 2f, GLES20Util.getWidth(), GLES20Util.getHeight_gl(), black, 0.8f, GLES20COMPOSITIONMODE.ALPHA);
+                if(gameState == GAMESTATE.GAMEOVER){
+                    gameOverText.draw(offsetX + GLES20Util.getWidth_gl() / 2f,offsetY + GLES20Util.getHeight_gl() / 2f + 0.8f, 1f, GLES20COMPOSITIONMODE.ALPHA);
+                }else {
+                    stageCrear.draw(offsetX + GLES20Util.getWidth_gl() / 2f, offsetY + GLES20Util.getHeight_gl() / 2f + 0.8f, 1f, GLES20COMPOSITIONMODE.ALPHA);
+                }
+                scoreText.draw(offsetX + 0.05f
+                        , offsetY + GLES20Util.getHeight_gl() / 2f + 0.5f
+                        , 1f
+                        , GLES20COMPOSITIONMODE.ALPHA);
+                float buff = nt.draw(score,4
+                        ,offsetX+0.05f + 0.05f + scoreText.getLengthX()
+                        ,offsetY + GLES20Util.getHeight_gl() / 2f + 0.5f
+                        ,1f,1,GLES20COMPOSITIONMODE.ALPHA);
+                zankiAdd.draw(
+                        offsetX+0.05f + 0.05f + scoreText.getLengthX()
+                        ,offsetY + GLES20Util.getHeight_gl() / 2f + 0.4f
+                        ,1f,GLES20COMPOSITIONMODE.ALPHA);
+                total.draw(offsetX + 0.05f
+                    ,offsetY + GLES20Util.getHeight_gl() / 2f + 0.2f
+                    ,1f,GLES20COMPOSITIONMODE.ALPHA);
+                if(gameState == GAMESTATE.CLEAR) {
+                    nt.draw(score + (200 * (player.getLife() - 1)), 4
+                            , total.getLengthX() + 0.05f
+                            , offsetY + GLES20Util.getHeight_gl() / 2f + 0.21f
+                            , 1.3f, 1, GLES20COMPOSITIONMODE.ALPHA);
+                }else{
+                    nt.draw(score, 4
+                            , total.getLengthX() + 0.05f
+                            , offsetY + GLES20Util.getHeight_gl() / 2f + 0.21f
+                            , 1.3f, 1, GLES20COMPOSITIONMODE.ALPHA);
+                }
+                backToMenuButton.draw(offsetX, offsetY);
+            }
         }
 
         //残基表示
-        for(int n = 0;n < player.getLife();n++){
-            GLES20Util.DrawGraph(offsetX + GLES20Util.getWidth_gl() - 0.05f - 0.05f*n,
+        for(int n = 0;n < player.getLife()-1;n++){
+            GLES20Util.DrawGraph(offsetX + GLES20Util.getWidth_gl() - 0.05f - 0.1f*n,
                     offsetY + GLES20Util.getHeight_gl()-0.05f,
-                    0.05f,
-                    0.05f,
+                    0.1f,
+                    0.1f,
                     BitmapList.getBitmap(R.drawable.plane),
                     1.0f,
                     GLES20COMPOSITIONMODE.ALPHA);
         }
 
-        //スコア表示
-        scoreText.draw(offsetX+0.05f,offsetY+GLES20Util.getHeight_gl()-0.1f,1f,GLES20COMPOSITIONMODE.ALPHA);
-        scoreNumber.draw(score,4,offsetX+0.05f,offsetY+GLES20Util.getHeight_gl()-scoreText.getLengthY()-0.15f,1f,1f,GLES20COMPOSITIONMODE.ALPHA);
+        if(gameState == GAMESTATE.PLAYING) {
+            //スコア表示
+            GLES20Util.DrawGraph(GLES20Util.getWidth_gl()/8f,GLES20Util.getHeight_gl()-GLES20Util.getHeight_gl()/14f+0.08f,GLES20Util.getWidth_gl()/4f+0.1f,GLES20Util.getHeight_gl()/7f-0.08f,black,0.3f,GLES20COMPOSITIONMODE.ALPHA);
+            scoreText.draw(offsetX + 0.05f, offsetY + GLES20Util.getHeight_gl(), 1f, GLES20COMPOSITIONMODE.ALPHA);
+            scoreNumber.draw(score, 4, offsetX + 0.05f, offsetY + GLES20Util.getHeight_gl() - scoreText.getLengthY(), 1f, 1f, GLES20COMPOSITIONMODE.ALPHA);
+        }
 
         //でバグ
-        nt.draw(bulletList.size(),1,offsetX+0.5f, offsetY + 0.5f, 1f,1f,GLES20COMPOSITIONMODE.ALPHA);
+        //nt.draw(bulletList.size(),1,offsetX+0.5f, offsetY + 0.5f, 1f,1f,GLES20COMPOSITIONMODE.ALPHA);
 
         //Log.d("bulletList : ",bulletList.toString());
     }
