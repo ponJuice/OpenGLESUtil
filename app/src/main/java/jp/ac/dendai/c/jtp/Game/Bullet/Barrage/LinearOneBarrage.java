@@ -13,6 +13,7 @@ public class LinearOneBarrage extends Barrage{
         bt.ux = ux;
         bt.uy = uy;
         deltaTime = (endTime - startTime)/number;
+        bt.radius = 0.05f;
     }
 
     @Override

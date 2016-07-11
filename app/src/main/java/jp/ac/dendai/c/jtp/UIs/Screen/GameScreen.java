@@ -285,7 +285,7 @@ public class GameScreen implements Screenable {
         scoreNumber.draw(score,4,offsetX+0.05f,offsetY+GLES20Util.getHeight_gl()-scoreText.getLengthY()-0.15f,1f,1f,GLES20COMPOSITIONMODE.ALPHA);
 
         //でバグ
-        //nt.draw(bulletList.size(),1,offsetX+0.5f, offsetY + 0.5f, 1f,1f,GLES20COMPOSITIONMODE.ALPHA);
+        nt.draw(bulletList.size(),1,offsetX+0.5f, offsetY + 0.5f, 1f,1f,GLES20COMPOSITIONMODE.ALPHA);
 
         //Log.d("bulletList : ",bulletList.toString());
     }

@@ -6,7 +6,9 @@ import java.util.Random;
 import jp.ac.dendai.c.jtp.Game.Bullet.Barrage.Barrage;
 import jp.ac.dendai.c.jtp.Game.Bullet.Barrage.BarrageList;
 import jp.ac.dendai.c.jtp.Game.Bullet.Barrage.LinearOneBarrage;
+import jp.ac.dendai.c.jtp.Game.Bullet.Barrage.Radiationbarrage;
 import jp.ac.dendai.c.jtp.Game.Bullet.Bullet;
+import jp.ac.dendai.c.jtp.Game.GameManager;
 import jp.ac.dendai.c.jtp.Game.Graphics.BitmapList;
 import jp.ac.dendai.c.jtp.Game.Motion.Action;
 import jp.ac.dendai.c.jtp.Game.Player;
@@ -54,7 +56,10 @@ public class Boss extends Enemy{
 
         //攻撃のパターン作成
         barrageList = new BarrageList();
-        barrageList.add(new LinearOneBarrage(R.drawable.bomd2, GameScreen.COLLISION_MASK.PLAYER.getInt(), GameScreen.COLLISION_MASK.ENEMYBULLET.getInt(), 0, -0.05f, 5, 0, 60));
+        Barrage temp = new LinearOneBarrage(R.drawable.bomd2, GameScreen.COLLISION_MASK.PLAYER.getInt(), GameScreen.COLLISION_MASK.ENEMYBULLET.getInt(), 0, -0.05f, 5, 0, 60);
+        barrageList.add(temp);
+        temp = new Radiationbarrage(R.drawable.bomd2, GameScreen.COLLISION_MASK.PLAYER.getInt(),GameScreen.COLLISION_MASK.ENEMYBULLET.getInt(),temp.getEndTime(),120,5,10,0,10f,0.01f);
+        barrageList.add(temp);
 
         ram = new Random();
 
@@ -62,8 +67,6 @@ public class Boss extends Enemy{
         for(int n = 0;n < frames.length;n++){
             frames[n] = new AnimationPoint();
         }
-
-        bt.uy = -0.05f;
     }
 
     @Override
