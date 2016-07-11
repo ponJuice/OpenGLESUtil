@@ -2,6 +2,7 @@ package jp.ac.dendai.c.jtp.UIs.Screen;
 
 import android.view.MotionEvent;
 
+import jp.ac.dendai.c.jtp.Game.Enemy.Boss;
 import jp.ac.dendai.c.jtp.Game.Enemy.EnemyList;
 import jp.ac.dendai.c.jtp.Game.Graphics.BackGround;
 import jp.ac.dendai.c.jtp.Game.Graphics.BitmapContainer;
@@ -51,7 +52,12 @@ public class GameScreen implements Screenable {
     }
     private int gameEndTime = 300;
     public static int score;
-    private GAMESTATE gameState = GAMESTATE.PLAYING;
+
+    public static void setGameState(GAMESTATE state) {
+        gameState = state;
+    }
+
+    private static GAMESTATE gameState = GAMESTATE.PLAYING;
     private static boolean isFreeze;
     public static EnemyList enemyList;
     public static BulletList bulletList;
@@ -69,6 +75,7 @@ public class GameScreen implements Screenable {
     private int counter = 0; //でバグ
 
     public GameScreen(){
+        gameState = GAMESTATE.PLAYING;
         isFreeze = true;
         score = 0;
         bulletList = new BulletList(128);
@@ -169,6 +176,17 @@ public class GameScreen implements Screenable {
         enemy.addAction(Action.bezierMotion(0, GLES20Util.getHeight_gl(), GLES20Util.getWidth_gl(), GLES20Util.getHeight_gl() / 2f,0, GLES20Util.getHeight_gl() / 2f, 180, 60));
         enemyList.addEnemys(enemy, 1);
 
+        //ボスの作成
+        Boss boss = new Boss(BitmapList.setBitmap(R.drawable.boss),GLES20Util.getWidth_gl()/2f,GLES20Util.getHeight_gl()+0.5f/2f,0.5f*2f,0.219f*2f,0.05f,100,R.drawable.ship,10,40,1000);
+        boss.getCollider().setRadius(0.219f);
+        boss.setStartTime(180);
+        boss.addAction(Action.moveRelative(GLES20Util.getWidth_gl()/ 2f, GLES20Util.getHeight_gl() - 0.219f / 2f - 0.1f,
+                60, 0));
+        boss.addAction(Action.moveRelative(GLES20Util.getWidth_gl()-0.5f/2f,GLES20Util.getHeight_gl()-0.219f/2f-0.1f,
+                        60,60));
+        boss.addAction(Action.moveRelative(0.5f / 2f, GLES20Util.getHeight_gl() - 0.219f / 2f - 0.1f,
+                120, 120));
+        enemyList.addEnemys(boss, 1);
         //プレイヤーコントロール用リスナ登録
         Input.getTouchArray()[0].addTouchListener(this.player);
 
@@ -205,18 +223,14 @@ public class GameScreen implements Screenable {
             //ゲームオーバー
             gameState = GAMESTATE.GAMEOVER;
             return;
+        }else if(gameState == GAMESTATE.CLEAR){
+            player.freeze();
         }else if(player.getDamageFlag() != Player.DAMAGE_STATE.EFFECT) {
-            if (totalTime >= gameEndTime) {
-                //ゲーム終了
-                gameState = GAMESTATE.CLEAR;
-                player.freeze();
-                return;
-            }
             //敵の移動
             enemyList.update();
             //敵と弾の衝突判定
             enemyList.playerBulletCollisionProc(player);
-            //ダメージをウケテナイ
+            //自機と弾の衝突判定
             bulletList.isPlayerCollisionProc(player);
             bulletList.update();
         }
@@ -236,12 +250,11 @@ public class GameScreen implements Screenable {
     @Override
     public void Draw(float offsetX, float offsetY) {
         //背景表示
-        background.draw(offsetX,offsetY);
+        background.draw(offsetX, offsetY);
 
+        enemyList.drawAll(offsetX, offsetY);
         player.Draw(offsetX, offsetY);
         bulletList.drawAll(offsetX, offsetY);
-        enemyList.drawAll(offsetX, offsetY);
-
 
         //GLES20Util.DrawGraph(0.5f,0.5f,0.1f,0.1f,BitmapList.getAnimationBitmap(R.drawable.preset).getAt(debugFrameCounter),1f,GLES20COMPOSITIONMODE.ALPHA);
         //debugFrameCounter++;

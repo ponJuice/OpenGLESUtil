@@ -10,4 +10,11 @@ public class BulletTemplate {
     public float ux,uy;
     public float sizeX,sizeY;
     public int mask,tag;
+    public BulletTemplate(){
+        radius = 0.05f;
+        sizeX = 0.1f;
+        sizeY = 0.1f;
+        mask = 0;
+        tag = 0;
+    }
 }

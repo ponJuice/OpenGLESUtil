@@ -26,7 +26,7 @@ public class MenuScreen implements Screenable {
 	private static MenuScreen instance;
 	private final static String[] content = {"START","OPTION","CREDIT"};
 	private static Text[] b_content;
-	private static Button button;
+	private static Button button,optionButton;
 	private long time = 0;
 
 	private MenuScreen(){
@@ -37,8 +37,11 @@ public class MenuScreen implements Screenable {
 			b_content[n].setVerticalTextAlign(Text.TextAlign.CENTOR);
 		}
 		Log.d("MenuScreen",String.valueOf(GLES20Util.getAspect()));
-		button = new Button(GLES20Util.getAspect(), 0.5f, 0.7f, 0.2f, 1f, "Start",255,255,0,0);
+		button = new Button(GLES20Util.getAspect(), 0.5f, 0.7f, 0.2f, 1f, "START",255,255,0,0);
+		button.setX(GLES20Util.getWidth_gl() / 2f);
 		button.setListener(new StartButtonListener());
+		optionButton = new Button(GLES20Util.getAspect(), 0.5f, 0.7f, 0.2f, 1f, "OPTION",255,255,0,0);
+		optionButton.setX(GLES20Util.getWidth_gl()/2f);
 		lock = new Object();
 	}
 
@@ -58,8 +61,8 @@ public class MenuScreen implements Screenable {
 
 	@Override
 	public void Draw(float offsetX, float offsetY) {
-		button.setX((float)(0.01*Math.sin(Math.toRadians(time))) + GLES20Util.getAspect());
-		button.setY((float)(0.01*Math.sin(Math.toRadians(time))) + 0.5f);
+		button.setY((float)(0.01*Math.sin(Math.toRadians(time))) + 1.5f);
+		optionButton.setY((float) (0.01 * Math.sin(Math.toRadians(time))) + 1.0f - button.getLengthY());
 
 		for(int n=0;n<content.length;n++){
 			if(b_content[n] != null){
@@ -70,6 +73,7 @@ public class MenuScreen implements Screenable {
 			}
 		}
 		button.draw(offsetX,offsetY);
+		optionButton.draw(offsetX,offsetY);
 		time++;
 	}
 	@Override

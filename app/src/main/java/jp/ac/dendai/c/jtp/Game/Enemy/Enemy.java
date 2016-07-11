@@ -1,5 +1,7 @@
 package jp.ac.dendai.c.jtp.Game.Enemy;
 
+import android.graphics.Bitmap;
+
 import java.util.LinkedList;
 
 import jp.ac.dendai.c.jtp.Game.Bullet.Bullet;
@@ -8,6 +10,7 @@ import jp.ac.dendai.c.jtp.Game.Graphics.BitmapList;
 import jp.ac.dendai.c.jtp.Game.Bullet.BulletTemplate;
 import jp.ac.dendai.c.jtp.Game.Motion.Action;
 import jp.ac.dendai.c.jtp.Physics.Collider.CircleCollider;
+import jp.ac.dendai.c.jtp.Physics.Physics.IPhysics2D;
 import jp.ac.dendai.c.jtp.UIs.Math.Vector2;
 import jp.ac.dendai.c.jtp.UIs.Screen.GameScreen;
 import jp.ac.dendai.c.jtp.openglesutil.R;
@@ -23,10 +26,11 @@ public class Enemy extends Bullet {
         EFFECT,
         DEAD
     }
+    protected boolean debug = false;
     protected EnemyList.EnemyListContainer elc;
     protected DAMAGE_STATE state = DAMAGE_STATE.NON;
     protected float collision_radius = 0.05f;
-    protected float HP = 1;
+    protected int HP = 1;
     protected BulletTemplate bt;
     protected LinkedList<Action> actions;
     protected int timeCounter = 0,effectTimeCounter = 0;
@@ -67,7 +71,7 @@ public class Enemy extends Bullet {
         actions = new LinkedList<>();
     }
 
-    public void damage(int value){
+    public void damage(int value,IPhysics2D owner){
         HP -= value;
         if(HP <= 0) {
             GameScreen.addScore(score);
@@ -77,7 +81,7 @@ public class Enemy extends Bullet {
     }
 
     public void addAction(Action action){
-        endTime += action.getEndTime();
+        endTime = Math.max(endTime,action.getEndTime());
         startTime = Math.min(startTime, action.getStartTime());
         actions.add(action);
     }
@@ -104,7 +108,13 @@ public class Enemy extends Bullet {
         if(state == DAMAGE_STATE.EFFECT){
             GLES20Util.DrawGraph(offsetX + position.getX(), offsetY + position.getY(), sizeX*2f, sizeY*2f, BitmapList.getAnimationBitmap(deadAnimationId).getAt(frame), 1f, GLES20COMPOSITIONMODE.ALPHA);
         }
+        debugDraw(offsetX,offsetY);
+    }
 
+    public void debugDraw(float offsetX,float offsetY){
+        if(!debug)
+            return;
+        GLES20Util.DrawGraph(offsetX + position.getX(), offsetY + position.getY(), collider.getRadius()*2f, collider.getRadius()*2f, BitmapList.getBitmap(R.drawable.bomd2), 1f, GLES20COMPOSITIONMODE.ALPHA);
     }
     public boolean isDead(){
         return HP <= 0;

@@ -18,6 +18,11 @@ public class AbsoluteLinerMove extends Action {
     }
 
     @Override
+    public void init(Vector2 obj) {
+
+    }
+
+    @Override
     public void action(Vector2 obj) {
         obj.copy(velocity);
         obj.scalarMult(counter);

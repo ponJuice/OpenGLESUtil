@@ -26,6 +26,7 @@ public class Player extends Bullet implements TouchListener {
 		INVISIBLE,
 	}
 
+	protected boolean debugInvisible = false;
 	protected boolean isfreeze = false;
 	protected BulletList playerBulletList;
 	protected DAMAGE_STATE d_state = DAMAGE_STATE.NON;
@@ -108,6 +109,12 @@ public class Player extends Bullet implements TouchListener {
 			position.setY(2.0f - sizeY/2f);
 		}
 		//Log.d("debug[Player][regulation]",String.valueOf(GLES20Util.getAspect()*2.0f));
+	}
+
+	public DAMAGE_STATE getState(){
+		if(debugInvisible == true)
+			return DAMAGE_STATE.INVISIBLE;
+		return d_state;
 	}
 
 	public BulletList getBulletList(){
@@ -212,7 +219,7 @@ public class Player extends Bullet implements TouchListener {
 	}
 
 	public boolean isDamage(){
-		return d_state != DAMAGE_STATE.NON;
+		return d_state != DAMAGE_STATE.NON || debugInvisible;
 	}
 
 	public float getPosition(Touch.Pos_Flag pos) {

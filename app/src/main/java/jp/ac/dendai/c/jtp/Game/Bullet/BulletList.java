@@ -64,10 +64,11 @@ public class BulletList{
     public void playerBulletCollision(EnemyList.EnemyListContainer e){
         RecycleRingList<Bullet>.RecycleRingListIterator<Bullet> ite = rrl.getIterator();
         while(ite.hasNext()){
-            Bullet b = ite.next().getObject();
-            if(b.isCollision(e.getObject()) && b.getCollider().mask(e.getObject().getCollider())){
+            RecycleRingList<Bullet>.RecycleRingListContainer<Bullet> cont = ite.next();
+            if(cont.getObject().isCollision(e.getObject()) && cont.getObject().getCollider().mask(e.getObject().getCollider())){
                 //衝突
-                e.getObject().damage(b.getAttackValue());
+                e.getObject().damage(cont.getObject().getAttackValue(),cont.getObject());
+                remove(cont);
             }
         }
     }

@@ -19,6 +19,11 @@ public class Bezier2Motion extends Action {
     }
 
     @Override
+    public void init(Vector2 obj) {
+        
+    }
+
+    @Override
     public void action(Vector2 obj) {
         if(nowTime > (endTime - startTime))
             nowTime = (endTime - startTime);

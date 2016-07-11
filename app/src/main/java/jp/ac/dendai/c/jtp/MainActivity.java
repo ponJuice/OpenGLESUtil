@@ -90,10 +90,7 @@ public class MainActivity extends Activity implements GLSurfaceView.Renderer{
 
         // GLSurfaceViewをこのアプリケーションの画面として使用する
         setContentView(glSurfaceView);
-        Log.d("onCreate", "onCreate finished");
-
-        GameManager.nowScreen = MenuScreen.getInstance();
-    }
+        Log.d("onCreate", "onCreate finished");}
 
     @Override
     public void onDrawFrame(GL10 arg0) {
@@ -110,7 +107,10 @@ public class MainActivity extends Activity implements GLSurfaceView.Renderer{
         //テクスチャの再読み込み
         GLES20Util.initTextures();
         GLES20Util.initFpsBitmap(fpsImage, true, R.drawable.degital2);;
-        Log.d("onSurfaceCreated","initShader");
+        Log.d("onSurfaceCreated", "initShader");
+
+        //ゲームの初期化
+        GameManager.nowScreen = MenuScreen.getInstance();
     }
 
     @Override

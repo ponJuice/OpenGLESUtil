@@ -14,7 +14,7 @@ public class AnimationSprite extends Sprite{
     private int animationId;
     private int roop;                       //0で停止　-1で無限
     private int animateTime,frameCounter;   //animationTime 次の画像にするまでの間の時間
-    private Bitmap nowSprite;
+    private int maxFrame;
     private int frame = 0;
 
     public void setMode(GLES20COMPOSITIONMODE mode){
@@ -29,6 +29,7 @@ public class AnimationSprite extends Sprite{
         this.animationId = animationId;
         this.mode = mode;
         this.roop = roop;
+        this.maxFrame = BitmapList.getAnimationBitmap(animationId).getBitmapCount();
     }
 
     public void resetAnimation(){

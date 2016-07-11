@@ -30,5 +30,6 @@ public abstract class Action {
         return endTime - startTime;
     }
 
+    public abstract void init(Vector2 obj);
     public abstract void action(Vector2 obj);
 }
