@@ -14,7 +14,9 @@ import jp.ac.dendai.c.jtp.Game.GameManager;
 import jp.ac.dendai.c.jtp.Game.Motion.Action;
 import jp.ac.dendai.c.jtp.Game.Player;
 import jp.ac.dendai.c.jtp.Physics.Collider.CircleCollider;
+import jp.ac.dendai.c.jtp.Physics.Physics.Physics2D;
 import jp.ac.dendai.c.jtp.TouchUtil.Input;
+import jp.ac.dendai.c.jtp.TouchUtil.Touch;
 import jp.ac.dendai.c.jtp.UIs.Transition.ScrollTransition;
 import jp.ac.dendai.c.jtp.UIs.UI.Button;
 import jp.ac.dendai.c.jtp.UIs.UI.Listener.ButtonListener;
@@ -74,6 +76,10 @@ public class GameScreen implements Screenable {
     private BackGround background;
     private Text stageCrear,gameOverText;
     protected int clearEffectCounter=0;
+    protected boolean useBomd = false;
+    protected Physics2D bomd;
+    protected int bomdCounter = 0;
+    protected int bomd_nokori = 3;
 
     private int counter = 0; //でバグ
 
@@ -83,12 +89,15 @@ public class GameScreen implements Screenable {
         score = 0;
         bulletList = new BulletList(128);
         this.player = new Player(new CircleCollider(0.03f),BitmapList.setBitmap(R.drawable.plane),0,0.5f,0.2f,0.2f);
+        bomd = new Physics2D();
+        bomd.setCollider(new CircleCollider(1f));
 
         /****************************************************/
         //画像リソース読み込み
         BitmapList.setBitmap(R.drawable.damage_effect);
         BitmapList.setBitmap(R.drawable.back);
         black = GLES20Util.createBitmap(0,0,0,255);
+        BitmapList.setBitmap(R.drawable.bomd_item);
 
         /*****************************************************/
 
@@ -244,6 +253,21 @@ public class GameScreen implements Screenable {
             player.freeze();
             clearEffectCounter++;
         }else if(player.getDamageFlag() != Player.DAMAGE_STATE.EFFECT) {
+            //ボム使用判定
+            if(!useBomd && Input.getTouchCount() >= 2 && bomd_nokori > 0){
+                bomd_nokori--;
+                useBomd = true;
+            }
+            if(useBomd) {
+                if(bomdCounter <= 120) {
+                    bomd.setPosition(player.getPosition());
+                    bulletList.playerBomdCollision(bomd);
+                    bomdCounter++;
+                }else{
+                    bomdCounter = 0;
+                    useBomd = false;
+                }
+            }
             //敵の移動
             enemyList.update();
             //敵と弾の衝突判定
@@ -269,6 +293,14 @@ public class GameScreen implements Screenable {
     public void Draw(float offsetX, float offsetY) {
         //背景表示
         background.draw(offsetX, offsetY);
+
+        //ボムの表示
+        if(useBomd) {
+            if(bomdCounter < 60)
+                GLES20Util.DrawGraph(player.getPosition(Touch.Pos_Flag.X), player.getPosition(Touch.Pos_Flag.Y), bomd.getCollider().getRadius() * 2f, bomd.getCollider().getRadius() * 2f, BitmapList.getBitmap(R.drawable.damage_effect), 1f/60f*bomdCounter, GLES20COMPOSITIONMODE.ADD);
+            else
+                GLES20Util.DrawGraph(player.getPosition(Touch.Pos_Flag.X), player.getPosition(Touch.Pos_Flag.Y), bomd.getCollider().getRadius() * 2f, bomd.getCollider().getRadius() * 2f, BitmapList.getBitmap(R.drawable.damage_effect), 1f - 1f/120f*bomdCounter, GLES20COMPOSITIONMODE.ADD);
+        }
 
         enemyList.drawAll(offsetX, offsetY);
         player.Draw(offsetX, offsetY);
@@ -348,6 +380,16 @@ public class GameScreen implements Screenable {
                     0.1f,
                     0.1f,
                     BitmapList.getBitmap(R.drawable.plane),
+                    1.0f,
+                    GLES20COMPOSITIONMODE.ALPHA);
+        }
+        //ボム残り表示
+        for(int n = 0;n < player.getLife()-1;n++){
+            GLES20Util.DrawGraph(offsetX + GLES20Util.getWidth_gl() - 0.05f - 0.1f*n,
+                    offsetY + GLES20Util.getHeight_gl()-0.2f,
+                    0.1f,
+                    0.1f,
+                    BitmapList.getBitmap(R.drawable.bomd_item),
                     1.0f,
                     GLES20COMPOSITIONMODE.ALPHA);
         }

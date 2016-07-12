@@ -54,6 +54,17 @@ public class BulletList{
             }
         }
     }
+
+    public void playerBomdCollision(IPhysics2D p){
+        RecycleRingList<Bullet>.RecycleRingListIterator<Bullet> ite = rrl.getIterator();
+        while(ite.hasNext()){
+            RecycleRingList<Bullet>.RecycleRingListContainer<Bullet> cont = ite.next();
+            if(p.isCollision(cont.getObject()) && p.getCollider().mask(cont.getObject().getCollider())){
+                remove(cont);
+            }
+        }
+    }
+
     public boolean isPlayerCollisionProc(Player obj){
         RecycleRingList<Bullet>.RecycleRingListIterator<Bullet> ite = rrl.getIterator();
         while(ite.hasNext()){

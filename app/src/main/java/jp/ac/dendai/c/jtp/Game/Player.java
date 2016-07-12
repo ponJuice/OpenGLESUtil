@@ -6,6 +6,7 @@ import jp.ac.dendai.c.jtp.Game.Bullet.BulletTemplate;
 import jp.ac.dendai.c.jtp.Game.Graphics.AnimationSprite;
 import jp.ac.dendai.c.jtp.Game.Graphics.BitmapList;
 import jp.ac.dendai.c.jtp.Physics.Collider.ICollider;
+import jp.ac.dendai.c.jtp.TouchUtil.Input;
 import jp.ac.dendai.c.jtp.TouchUtil.Touch;
 import jp.ac.dendai.c.jtp.TouchUtil.TouchListener;
 import jp.ac.dendai.c.jtp.UIs.Math.Vector2;
@@ -39,6 +40,7 @@ public class Player extends Bullet implements TouchListener {
 	protected int attackRate = 10;
 	protected int totalTime = 0;
 	protected BulletTemplate bt;
+
 	/**
 	 * 排他制御用のオブジェクト
 	 */
