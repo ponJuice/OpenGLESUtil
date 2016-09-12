@@ -1,0 +1,67 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 32744 bytes for ChunkPool::allocate
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   In 32 bit mode, the process size limit was hit
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Use 64 bit Java on a 64 bit OS
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (allocation.cpp:211), pid=12264, tid=16264
+#
+# JRE version: Java(TM) SE Runtime Environment (7.0_51-b13) (build 1.7.0_51-b13)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (24.51-b03 mixed mode windows-amd64 compressed oops)
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000000000862b800):  JavaThread "C2 CompilerThread1" daemon [_thread_in_native, id=16264, stack(0x0000000009c90000,0x0000000009d90000)]
+
+Stack: [0x0000000009c90000,0x0000000009d90000]
+
+Current CompileTask:
+C2:   2949  241             com.android.dx.ssa.SCCP::simulateStmt (481 bytes)
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x000000000a0d5800 JavaThread "pool-2-thread-4" [_thread_in_Java, id=11536, stack(0x000000000a790000,0x000000000a890000)]
+  0x000000000a0c0000 JavaThread "pool-2-thread-3" [_thread_blocked, id=7612, stack(0x000000000a690000,0x000000000a790000)]
+  0x000000000a032000 JavaThread "pool-2-thread-2" [_thread_blocked, id=15956, stack(0x000000000a590000,0x000000000a690000)]
+  0x000000000a041000 JavaThread "pool-3-thread-1" [_thread_blocked, id=3812, stack(0x000000000a490000,0x000000000a590000)]
+  0x000000000a083000 JavaThread "pool-2-thread-1" [_thread_blocked, id=14936, stack(0x000000000a390000,0x000000000a490000)]
+  0x000000000862f800 JavaThread "Service Thread" daemon [_thread_blocked, id=2008, stack(0x0000000009d90000,0x0000000009e90000)]
+=>0x000000000862b800 JavaThread "C2 CompilerThread1" daemon [_thread_in_native, id=16264, stack(0x0000000009c90000,0x0000000009d90000)]
+  0x00000000085f8000 JavaThread "C2 CompilerThread0" daemon [_thread_in_native, id=1580, stack(0x0000000009b90000,0x0000000009c90000)]
+  0x000000000861f000 JavaThread "Attach Listener" daemon [_thread_blocked, id=1588, stack(0x0000000009a90000,0x0000000009b90000)]
+  0x000000000861c800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=15780, stack(0x0000000009990000,0x0000000009a90000)]
+  0x00000000085de800 JavaThread "Finalizer" daemon [_thread_blocked, id=13444, stack(0x0000000009890000,0x0000000009990000)]
+  0x00000000085d3800 JavaThread "Reference Handler" daemon [_thread_blocked, id=4728, stack(0x0000000009790000,0x0000000009890000)]
+  0x000000000277e000 JavaThread "main" [_thread_blocked, id=8652, stack(0x0000000000b00000,0x0000000000c00000)]
+
+Other Threads:
+  0x00000000085d1800 VMThread [stack: 0x0000000009690000,0x0000000009790000] [id=11756]
+  0x000000000863d800 WatcherThread [stack: 0x0000000009e90000,0x0000000009f90000] [id=10388]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ PSYoungGen      total 18944K, used 16698K [0x00000000eaa80000, 0x00000000ecf80000, 0x0000000100000000)
+  eden space 16384K, 86% used [0x00000000eaa80000,0x00000000eb8553a0,0x00000000eba80000)
+  from space 2560K, 98% used [0x00000000eba80000,0x00000000ebcf9638,0x00000000ebd00000)
+  to   space 2560K, 0% used [0x00000000ecd00000,0x00000000ecd00000,0x00000000ecf80000)
+ ParOldGen       total 41984K, used 1509K [0x00000000c0000000, 0x00000000c2900000, 0x00000000eaa80000)
+  object space 41984K, 3% used [0x00000000c0000000,0x00000000c0179530,0x00000000c2900000)
+ PSPermGen       total 21504K, used 5361K [0x00000000bae00000, 0x00000000bc300000, 0x00000000c0000000)
